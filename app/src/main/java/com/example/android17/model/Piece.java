@@ -13,7 +13,7 @@ public abstract class Piece {
 	/**
 	 * Defines color of the Piece.
 	 */
-	int color;
+	public int color;
 	
 	/**
 	 * Defines the x Position of the Piece.
@@ -110,6 +110,7 @@ public abstract class Piece {
 	 * @return True if move is valid and no parameters are wrong, False if something prevents the move from legally occurring.
 	 */
 	public boolean move(Piece board[][], int x, int y, int color) {
+//		System.out.println("Moving a piece");
 		if (this.color != color) {
 			return false;
 		}
@@ -132,6 +133,7 @@ public abstract class Piece {
 		this.yPos = y;
 		board[x][y] = this;
 		board[i][j] = null;
+
 		return true;
 	}
 	

@@ -27,7 +27,12 @@ public class SquareAdapter extends BaseAdapter {
     @Override
     public Object getItem(int position) {
         // TODO Auto-generated method stub
-        return null;
+        int xPos = position%8;
+        int yPos = position/8;
+        Piece item = (Piece) board[xPos][yPos];
+        return item;
+        //before:
+        // return null;
     }
 
     @Override
