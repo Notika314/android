@@ -18,7 +18,6 @@ public class SquareAdapter extends BaseAdapter {
         this.board = board;
     }
 
-
     @Override
     public int getCount() {
         return 64;
@@ -26,18 +25,14 @@ public class SquareAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        // TODO Auto-generated method stub
         int xPos = position%8;
         int yPos = position/8;
         Piece item = (Piece) board[xPos][yPos];
         return item;
-        //before:
-        // return null;
     }
 
     @Override
     public long getItemId(int position) {
-        // TODO Auto-generated method stub
         return 0;
     }
 

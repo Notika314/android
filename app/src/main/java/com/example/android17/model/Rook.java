@@ -27,6 +27,7 @@ public class Rook extends Piece {
 		temp.validMoves = this.validMoves;
 		temp.hasValidMove = this.hasValidMove;
 		temp.hasMoved = this.hasMoved;
+		temp.hollow = true;
 		return temp;
 	}
 
@@ -43,10 +44,12 @@ public class Rook extends Piece {
 		while (i < 8 && i >= 0 && j < 8 && j >= 0) {
 			if (board[i][j] != null) {
 				if (board[i][j].color != this.color) {
-					shield(board, i, j, deltaX, deltaY);
+					if (!this.hollow) {
+						shield(board, i, j, deltaX, deltaY);
+					}
 					this.validMoves[i][j] += 1;
 					this.hasValidMove = true;
-					if (board[i][j].type == 'K' && this.validMoves[i][j] == 1) {
+					if (board[i][j].type == 'k' && this.validMoves[i][j] == 1) {
 						flag();
 						((King)board[i][j]).isInCheck = true;
 						path(board, deltaX, deltaY);

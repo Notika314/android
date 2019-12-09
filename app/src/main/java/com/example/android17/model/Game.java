@@ -17,7 +17,7 @@ public class Game {
 	 * Defines which player has the current turn. Is set
 	 * to -1 for white and 1 for black.
 	 */
-	int currMove;
+	public int currMove;
 	
 	/**
 	 * Constructs the game board and fills in all Pieces that would

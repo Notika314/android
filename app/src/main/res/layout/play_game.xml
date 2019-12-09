@@ -63,7 +63,7 @@
                 android:horizontalSpacing="0dp"
                 android:layout_centerVertical="true"
                 android:scrollbars="none"
-                android:layout_marginTop="25dp"
+                android:layout_marginTop="20dp"
                 android:numColumns="8"
                 android:padding="0dp"
                 android:stretchMode="columnWidth"

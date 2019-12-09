@@ -18,12 +18,12 @@ public abstract class Piece {
 	/**
 	 * Defines the x Position of the Piece.
 	 */
-	int xPos;
+	public int xPos;
 	
 	/**
 	 * Defines the y Position of the Piece.
 	 */
-	int yPos;
+	public int yPos;
 	
 	/**
 	 * Defines the type of Piece that it is 
@@ -47,12 +47,17 @@ public abstract class Piece {
 	 * all the valid moves it can make on the board. Some pieces
 	 * designate greater values than 1 to denote special moves.
 	 */
-	int validMoves[][];
+	public int validMoves[][];
 	
 	/**
 	 * Defines whether the piece is protecting its King from check.
 	 */
 	int kingShield[];
+
+	/**
+	 * Defines whether the piece is a copy.
+	 */
+	boolean hollow;
 	
 	/** 
 	 * Defines and statically tracks the location of the Pieces that
@@ -80,6 +85,7 @@ public abstract class Piece {
 		this.xPos = xPos;
 		this.yPos = yPos;
 		this.hasMoved = false;
+		this.hollow = false;
 		this.validMoves = new int[8][8];
 	}
 
@@ -192,7 +198,7 @@ public abstract class Piece {
 		j += deltaY;
 		while (i < 8 && i >= 0 && j < 8 && j >= 0) {
 			if (board[i][j] != null) {
-				if (board[i][j].color == board[x][y].color && board[i][j].type == 'K') {
+				if (board[i][j].color == board[x][y].color && board[i][j].type == 'k') {
 					board[x][y].kingShield = new int[] {i,j};
 				}
 				else {

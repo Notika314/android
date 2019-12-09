@@ -26,6 +26,7 @@ public class Knight extends Piece {
 		Knight temp = new Knight(this.color, this.xPos, this.yPos);
 		temp.validMoves = this.validMoves;
 		temp.hasValidMove = this.hasValidMove;
+		temp.hollow = true;
 		return temp;
 	}
 
@@ -101,7 +102,7 @@ public class Knight extends Piece {
 		}
 		if ((i+2 < 8 && i+2 >= 0 && j+1 < 8 && j+1 >= 0) && 
 				(board[i+2][j+1] == null || board[i+2][j+1].color != this.color)) {
-			if (board[i+2][j+1] != null && board[i+2][j+1].type == 'K') {
+			if (board[i+2][j+1] != null && board[i+2][j+1].type == 'k') {
 				flag();
 				((King)board[i+2][j+1]).isInCheck = true;
 			}
@@ -110,7 +111,7 @@ public class Knight extends Piece {
 		}
 		if ((i+1 < 8 && i+1 >= 0 && j+2 < 8 && j+2 >= 0) && 
 				(board[i+1][j+2] == null || board[i+1][j+2].color != this.color)) {
-			if (board[i+1][j+2] != null && board[i+1][j+2].type == 'K') {
+			if (board[i+1][j+2] != null && board[i+1][j+2].type == 'k') {
 				flag();
 				((King)board[i+1][j+2]).isInCheck = true;
 			}
@@ -119,7 +120,7 @@ public class Knight extends Piece {
 		}
 		if ((i-1 < 8 && i-1 >= 0 && j+2 < 8 && j+2 >= 0) && 
 				(board[i-1][j+2] == null || board[i-1][j+2].color != this.color)) {
-			if (board[i-1][j+2] != null && board[i-1][j+2].type == 'K') {
+			if (board[i-1][j+2] != null && board[i-1][j+2].type == 'k') {
 				flag();
 				((King)board[i-1][j+2]).isInCheck = true;
 			}
@@ -128,7 +129,7 @@ public class Knight extends Piece {
 		}
 		if ((i-2 < 8 && i-2 >= 0 && j+1 < 8 && j+1 >= 0) && 
 				(board[i-2][j+1] == null || board[i-2][j+1].color != this.color)) {
-			if (board[i-2][j+1] != null && board[i-2][j+1].type == 'K') {
+			if (board[i-2][j+1] != null && board[i-2][j+1].type == 'k') {
 				flag();
 				((King)board[i-2][j+1]).isInCheck = true;
 			}
@@ -137,7 +138,7 @@ public class Knight extends Piece {
 		}
 		if ((i-2 < 8 && i-2 >= 0 && j-1 < 8 && j-1 >= 0) && 
 				(board[i-2][j-1] == null || board[i-2][j-1].color != this.color)) {
-			if (board[i-2][j-1] != null && board[i-2][j-1].type == 'K') {
+			if (board[i-2][j-1] != null && board[i-2][j-1].type == 'k') {
 				flag();
 				((King)board[i-2][j-1]).isInCheck = true;
 			}
@@ -146,7 +147,7 @@ public class Knight extends Piece {
 		}
 		if ((i-1 < 8 && i-1 >= 0 && j-2 < 8 && j-2 >= 0) && 
 				(board[i-1][j-2] == null || board[i-1][j-2].color != this.color)) {
-			if (board[i-1][j-2] != null && board[i-1][j-2].type == 'K') {
+			if (board[i-1][j-2] != null && board[i-1][j-2].type == 'k') {
 				flag();
 				((King)board[i-1][j-2]).isInCheck = true;
 			}
@@ -155,7 +156,7 @@ public class Knight extends Piece {
 		}
 		if ((i+1 < 8 && i+1 >= 0 && j-2 < 8 && j-2 >= 0) && 
 				(board[i+1][j-2] == null || board[i+1][j-2].color != this.color)) {
-			if (board[i+1][j-2] != null && board[i+1][j-2].type == 'K') {
+			if (board[i+1][j-2] != null && board[i+1][j-2].type == 'k') {
 				flag();
 				((King)board[i+1][j-2]).isInCheck = true;
 			}
@@ -164,7 +165,7 @@ public class Knight extends Piece {
 		}
 		if ((i+2 < 8 && i+2 >= 0 && j-1 < 8 && j-1 >= 0) && 
 				(board[i+2][j-1] == null || board[i+2][j-1].color != this.color)) {
-			if (board[i+2][j-1] != null && board[i+2][j-1].type == 'K') {
+			if (board[i+2][j-1] != null && board[i+2][j-1].type == 'k') {
 				flag();
 				((King)board[i+2][j-1]).isInCheck = true;
 			}

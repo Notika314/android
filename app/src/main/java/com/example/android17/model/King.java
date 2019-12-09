@@ -12,7 +12,7 @@ public class King extends Piece {
 	/**
 	 * Defines whether the King is in check or not.
 	 */
-	boolean isInCheck;
+	public boolean isInCheck;
 	
 	/**
 	 * Initializes a King with given color and position.
@@ -36,6 +36,7 @@ public class King extends Piece {
 		temp.hasValidMove = this.hasValidMove;
 		temp.isInCheck = this.isInCheck;
 		temp.hasMoved = this.hasMoved;
+		temp.hollow = true;
 		return temp;
 	}
 
@@ -52,9 +53,6 @@ public class King extends Piece {
 			return false;
 		}
 		if (x > 7 || x < 0 || y > 7 || y < 0) {
-			return false;
-		}
-		if (board[x][y] != null) {
 			return false;
 		}
 		if (this.validMoves[x][y] == 0) {
@@ -147,7 +145,7 @@ public class King extends Piece {
 			for (int j=0;j<8;j++) {
 				if (board[i][j]!=null && board[i][j].color!=this.color ) {
 					Piece opponent = board[i][j].copy();
-					if (opponent.type!='K') {
+					if (opponent.type!='k') {
 						opponent.generateValidMoves(board);
 					}
 					if (this.color == -1) {
