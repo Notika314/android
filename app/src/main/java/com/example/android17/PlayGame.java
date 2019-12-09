@@ -110,14 +110,14 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
             xFinal = position%8;
             yFinal = position/8;
             status.setText("Moving piece to "+xFinal+", "+yFinal+" , color:"+pieceToMove.color);
+            if (pieceToMove.type == 'p' &&
+                    ((pieceToMove.color == -1 && yFinal == 0) ||
+                            (pieceToMove.color == 1 && yFinal == 7))) {
+                promote();
+                return;
+            }
             if (pieceToMove.move(game.board, xFinal, yFinal, game.currMove)) {
                 status.setText("Choose a piece to move");
-                if (pieceToMove.type == 'p' &&
-                        ((pieceToMove.color == -1 && yFinal == 0) ||
-                                (pieceToMove.color == 1 && yFinal == 7))) {
-                    promote(x, y);
-                    return;
-                }
                 this.game.addBoard(this.game.board);
                 System.out.println("Adding "+this.game.allMoves.getLast()+" to the sequence of moves");
                 color = game.currMove==-1? "black" : "white" ;
@@ -210,13 +210,14 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
     //configuring account
 
 
-    public void promote(int x, int y) {
+    public void promote() {
         String[] promo = {"Queen", "Bishop", "Knight", "Rook"};
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Pick a piece");
         builder.setItems(promo, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int chosen) {
+                pieceToMove.move(game.board, xFinal, yFinal, pieceToMove.color);
                 if (promo[chosen].equals("Queen")) {
                     game.board[pieceToMove.xPos][pieceToMove.yPos] = new Queen(pieceToMove.color, pieceToMove.xPos, pieceToMove.yPos);
                 }
@@ -234,7 +235,6 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
             }
         });
         builder.setOnCancelListener(dialogInterface -> {
-            ((Pawn)pieceToMove).moveBack(game.board, x, y);
             status.setText("Promotion Cancelled");
             clearMoves();
             pieceIsChosen = false;
