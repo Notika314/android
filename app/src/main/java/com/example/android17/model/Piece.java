@@ -35,7 +35,7 @@ public abstract class Piece {
 	 * Defines whether the Piece has a valid and legal
 	 * move that it can make.
 	 */
-	boolean hasValidMove;
+	public boolean hasValidMove;
 	
 	/**
 	 * Defines whether the Piece has moved this game.

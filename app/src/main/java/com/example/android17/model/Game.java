@@ -12,7 +12,7 @@ public class Game {
 	 * Defines the game board, made up of all Pieces on the board at
 	 * any time in an 8 by 8 array.
 	 */
-	public LinkedList<String> allMoves;
+	public GameView allViews;
 	public Piece[][] board;
 	
 	/**
@@ -26,7 +26,7 @@ public class Game {
 	 * be at the start of your typical Chess game.
 	 */
 	public Game() {
-		allMoves = new LinkedList<String>();
+		allViews = new GameView();
 		currMove = -1;
 		board = new Piece[8][8];
 		board[0][0] = new Rook(1,0,0);
@@ -50,7 +50,6 @@ public class Game {
 			board[i][6] = new Pawn(-1,i,6);
 		}
 		addBoard(board);
-//		allMoves.add(board);
 		return;
 	}
 
@@ -60,13 +59,14 @@ public class Game {
 		for (int i=0;i<8;i++) {
 			for (int j=0;j<8;j++) {
 				if (board[i][j]==null) {
-					simpleBoard+="0 ";
+					simpleBoard+="00 ";
 				}
-				else if (board[i][j].color==1) simpleBoard=simpleBoard+ board[i][j].type+" ";
-				else simpleBoard= simpleBoard+Character.toUpperCase(board[i][j].type)+" ";
+				else if (board[i][j].color==1) simpleBoard=simpleBoard+"b"+ board[i][j].type+" ";
+				else simpleBoard= simpleBoard+"w"+board[i][j].type+" ";
 			}
 		}
-		allMoves.add(simpleBoard);
+		allViews.addView(simpleBoard);
+		System.out.println(simpleBoard);
 	}
 
 	public Piece[][] getBoard() {

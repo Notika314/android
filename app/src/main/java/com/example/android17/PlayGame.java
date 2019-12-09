@@ -4,7 +4,7 @@ import com.example.android17.model.Bishop;
 import com.example.android17.model.Knight;
 import com.example.android17.model.Pawn;
 import com.example.android17.model.Piece;
-
+import android.content.Intent;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -21,7 +21,7 @@ import com.example.android17.model.Piece;
 import com.example.android17.model.Queen;
 import com.example.android17.model.King;
 import com.example.android17.model.Rook;
-
+import android.widget.Button;
 import java.util.concurrent.TimeUnit;
 import java.util.LinkedList;
 import android.graphics.Color;
@@ -29,9 +29,11 @@ import android.app.AlertDialog;
 
 
 public class PlayGame extends AppCompatActivity implements OnItemClickListener {
+    public Button resign_btn, draw_btn, undo_btn, ai_btn;
     private boolean pieceIsChosen;
 //    public LinkedList<Piece[][]> allMoves;
     String color;
+    public boolean drawOfferred;
     private Game game;
     private int xFinal;
     private int yFinal;
@@ -55,6 +57,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
         //from chess class in Chess project
 //        this.allMoves = new LinkedList<Piece[8][8]>();
         this.game = new Game();
+        this.drawOfferred = true;
         whiteKing = (King)game.board[4][7];
         blackKing = (King)game.board[4][0];
         boolean drawOffer = false;
@@ -68,8 +71,64 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
         final GridView chessBoardGridView = findViewById(R.id.board);
         chessBoardGridView.setAdapter(adapter);
         chessBoardGridView.setOnItemClickListener(this);
+//        resign_btn.setOnClickListener()
         pieceIsChosen=false;
         this.board = chessBoardGridView;
+        resign_btn = (Button) findViewById(R.id.resign_btn);
+        draw_btn = (Button) findViewById(R.id.draw_btn);
+        ai_btn = (Button) findViewById(R.id.ai_btn);
+        undo_btn = (Button) findViewById(R.id.undo_btn);
+        resign_btn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v ) {
+                PlayGame activity = PlayGame.this;
+                SquareAdapter adapter = activity.adapter;
+                Game game = activity.game;
+//                board.move("resign");
+                String loser = game.currMove==-1? "Whites" : "Blacks";
+                String winner  = game.currMove==-1? "Blacks": "Whites";
+                status.setText(loser+" resigned. "+ winner+" won the game.");
+//                activity.movetn.setEnabled(false);
+                activity.resign_btn.setEnabled(false);
+                activity.draw_btn.setEnabled(false);
+                activity.undo_btn.setEnabled(false);
+                activity.ai_btn.setEnabled(false);
+                chessBoardGridView.setOnItemClickListener(null);
+//                saveGame(game);
+            }
+        });
+
+        draw_btn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v ) {
+                PlayGame activity = PlayGame.this;
+                SquareAdapter adapter = activity.adapter;
+                Game game = activity.game;
+                if (!activity.drawOfferred) {
+                    activity.drawOfferred = true;
+                    status.setText("Draw?");
+                } else {
+                    if (activity.drawOfferred) {
+                        status.setText("Draw accepted. End of the game");
+                        activity.resign_btn.setEnabled(false);
+                        activity.draw_btn.setEnabled(false);
+                        activity.undo_btn.setEnabled(false);
+                        activity.ai_btn.setEnabled(false);
+                        chessBoardGridView.setOnItemClickListener(null);
+//                        saveGame(game);
+                    }
+                }
+            }
+        });
+
+        ai_btn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v ) {
+
+            }
+        });
+        undo_btn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v ) {
+
+            }
+        });
 //        allMoves.add(this.game.board);
         board.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
@@ -78,8 +137,16 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
         });
     }
 
+//    private void saveGame(Game game) {
+//        Bundle bundle = new Bundle();
+//        String key = "views";
+//        bundle.putParcelable(key,game.allViews);
+//    }
+
+
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        this.drawOfferred = false;
         status = findViewById(R.id.statusView);
         status.setTextColor(0xFFFFFFFF);
         if (!pieceIsChosen) {
@@ -119,16 +186,8 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
             if (pieceToMove.move(game.board, xFinal, yFinal, game.currMove)) {
                 status.setText("Choose a piece to move");
                 this.game.addBoard(this.game.board);
-//                System.out.println("Adding "+this.game.allMoves.getLast()+" to the sequence of moves");
                 color = game.currMove==-1? "black" : "white" ;
                 status.setText("Choose a " + color+" piece to move");
-                //sleep(1);
-                //adapter = new SquareAdapter(this, game.board);
-                //setContentView(R.layout.play_game);
-                //adapter.refresh();
-                //final GridView chessBoardGridView = findViewById(R.id.board);
-                //chessBoardGridView.setOnItemClickListener(this);
-                //this.board = chessBoardGridView;
                 board.setAdapter(adapter);
                 if (game.currMove == -1) {
                     whiteKing.isInCheck = false;
@@ -159,6 +218,27 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                         status.setText("Black in Check");
                     }
                 }
+
+                King king2 = game.currMove==-1 ?  whiteKing : blackKing;
+                if (king2.isInCheck && !king2.hasValidMove && !game.protector() && !game.blocker()) {
+                    String winner = game.currMove==-1? "Black" : "White" ;
+                    status.setText("Checkmate. "+winner+" wins");
+                    return;
+                }
+                if (game.hasNoValidMoves() ) {
+                    King king = game.currMove==-1 ?  whiteKing : blackKing;
+                    if (!king.isInCheck) {
+                        status.setText("Draw by stalemate");
+
+                    }
+                    else {
+                        String winner = game.currMove==-1? "Black" : "White" ;
+                        status.setText("Checkmate. "+winner+" wins");
+                        return;
+                    }
+                }
+                game.disarmShields();
+
                 tempView.setBackgroundColor(0x00000000);
                 clearMoves();
                 pieceIsChosen = false;
@@ -188,6 +268,8 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
             }
         }
     }
+
+
 
     public void legalMoves(Piece p) {
         if (p.color != game.currMove) {
