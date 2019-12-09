@@ -46,22 +46,13 @@ public class Pawn extends Piece {
 	 * @return True if move is valid and no parameters are wrong, False if something prevents the move from legally occurring
 	 */
 	public boolean move(Piece board[][], int x, int y, int color) {
-<<<<<<< HEAD
-=======
-//		System.out.println("Moving a pawn");
->>>>>>> 711f652145201df145771dee21c26f754933c397
 		if (this.color != color) {
-//			System.out.println("On 50");
 			return false;
 		}
 		if (x > 7 || x < 0 || y > 7 || y < 0) {
-//			System.out.println("On 54");
-
 			return false;
 		}
 		if (this.validMoves[x][y] == 0) {
-//			System.out.println("On 59");
-
 			return false;
 		}
 		if (this.color == -1) {
@@ -76,11 +67,6 @@ public class Pawn extends Piece {
 		if (this.validMoves[x][y] == 2) {
 			board[x][y-this.color] = null;
 		}
-<<<<<<< HEAD
-=======
-//		System.out.println("On 75");
-
->>>>>>> 711f652145201df145771dee21c26f754933c397
 		int i = this.xPos;
 		int j = this.yPos;
 		this.xPos = x;
