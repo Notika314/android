@@ -185,6 +185,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
             view.setBackgroundColor(0x00000000);
         }
     }
+    //configuring account
 
 }
 //notes:
