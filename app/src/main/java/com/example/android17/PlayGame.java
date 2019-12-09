@@ -119,7 +119,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
             if (pieceToMove.move(game.board, xFinal, yFinal, game.currMove)) {
                 status.setText("Choose a piece to move");
                 this.game.addBoard(this.game.board);
-                System.out.println("Adding "+this.game.allMoves.getLast()+" to the sequence of moves");
+//                System.out.println("Adding "+this.game.allMoves.getLast()+" to the sequence of moves");
                 color = game.currMove==-1? "black" : "white" ;
                 status.setText("Choose a " + color+" piece to move");
                 //sleep(1);

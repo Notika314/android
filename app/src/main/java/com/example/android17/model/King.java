@@ -316,7 +316,7 @@ public class King extends Piece {
 		}
 		this.isInCheck = tempCheck;
 		if (!this.isInCheck && !this.hasMoved) {
-			if ( board[this.xPos+3][this.yPos]!=null && board[this.xPos+3][this.yPos].type=='R' &&
+			if ( board[this.xPos+3][this.yPos]!=null && board[this.xPos+3][this.yPos].type=='r' &&
 					!(board[this.xPos+3][this.yPos].hasMoved) ) {
 				boolean clear = true;
 				if (!(isSafeForSliding(this.xPos+1,this.yPos,board)) || !(isSafeForSliding(this.xPos+2,this.yPos,board))) {
@@ -325,11 +325,13 @@ public class King extends Piece {
 				for (int i=1;i<3;i++) {
 					if ( board[this.xPos+i][this.yPos]!=null ) {
 						clear = false;
-					} 
+					}
 				}
-				if (clear) this.validMoves[this.xPos+2][this.yPos] = 2;
+				if (clear) {
+					this.validMoves[this.xPos+2][this.yPos] = 2;
+				}
 			}
-			if ( board[this.xPos-4][this.yPos]!=null && board[this.xPos-4][this.yPos].type=='R' &&
+			if ( board[this.xPos-4][this.yPos]!=null && board[this.xPos-4][this.yPos].type=='r' &&
 					!(board[this.xPos-4][this.yPos].hasMoved) ) {
 				boolean clear = true;
 				if (!(isSafeForSliding(this.xPos-1,this.yPos,board)) || !(isSafeForSliding(this.xPos-2,this.yPos,board))) {
@@ -338,9 +340,11 @@ public class King extends Piece {
 				for (int i=1;i<4;i++) {
 					if ( board[this.xPos-i][this.yPos]!=null ) {
 						clear = false;
-					} 
+					}
 				}
-				if (clear) this.validMoves[this.xPos-2][this.yPos] = 2;
+				if (clear) {
+					this.validMoves[this.xPos-2][this.yPos] = 2;
+				}
 			}
 		} 
 	}	
