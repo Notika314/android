@@ -28,7 +28,7 @@
                 android:layout_width="0dp"
                 android:layout_height="100dp"
                 android:layout_weight="1"
-                android:background="#4E4B4B"
+                android:background="#0D0001"
                 android:fontFamily="monospace"
                 android:padding="10dp"
                 android:text="@string/textview"

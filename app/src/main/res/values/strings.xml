@@ -10,5 +10,5 @@
     <string name="draw">DRAW</string>
     <string name="resign">RESIGN</string>
     <string name="undo">UNDO</string>
-    <string name="textview">Choose a piece to move</string>
+    <string name="textview">Choose a white piece to move</string>
 </resources>
