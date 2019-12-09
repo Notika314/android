@@ -11,4 +11,11 @@
     <string name="resign">RESIGN</string>
     <string name="undo">UNDO</string>
     <string name="textview">Choose a white piece to move</string>
+    <string name="saved_games">Saved Games</string>
+    <string name="title_activity_saved_games">SavedGames</string>
+    <string-array name = "games_array">
+        <item>Game 1</item>
+        <item>Game 2</item>
+        <item>Game 3</item>
+    </string-array>
 </resources>

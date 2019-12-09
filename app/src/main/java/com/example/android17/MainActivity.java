@@ -2,14 +2,11 @@ package com.example.android17;
 
 import android.content.Intent;
 import android.os.Bundle;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
+
 import android.widget.Button;
-import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
     private Button newGame;
@@ -27,10 +24,15 @@ public class MainActivity extends AppCompatActivity {
         //NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         //NavigationUI.setupWithNavController(navView, navController);
         newGame = findViewById(R.id.newGame);
-        replayGame = findViewById(R.id.replayGame);
+        replayGame = findViewById(R.id.savedGames);
         newGame.setOnClickListener((V)->startNewGame());
+        replayGame.setOnClickListener((V)->listGames());
     }
 
+    private void listGames() {
+        Intent intent = new Intent(this, SavedGames.class);
+        startActivity(intent);
+    }
 
     private void startNewGame() {
 //        Bundle bundle = new Bundle();
