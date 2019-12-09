@@ -1,6 +1,7 @@
 package com.example.android17.model;
-
-/** 
+ import java.util.LinkedList;
+ import java.util.ArrayList;
+/**
  * This class has some general Game rules along with game states that
  * are vital to the functioning of Chess.
  * @author Natalia Bryzhatenko nb631
@@ -11,6 +12,7 @@ public class Game {
 	 * Defines the game board, made up of all Pieces on the board at
 	 * any time in an 8 by 8 array.
 	 */
+	public LinkedList<String> allMoves;
 	public Piece[][] board;
 	
 	/**
@@ -24,6 +26,7 @@ public class Game {
 	 * be at the start of your typical Chess game.
 	 */
 	public Game() {
+		allMoves = new LinkedList<String>();
 		currMove = -1;
 		board = new Piece[8][8];
 		board[0][0] = new Rook(1,0,0);
@@ -46,7 +49,24 @@ public class Game {
 			board[i][1] = new Pawn(1,i,1);
 			board[i][6] = new Pawn(-1,i,6);
 		}
+		addBoard(board);
+//		allMoves.add(board);
 		return;
+	}
+
+	//adding baord of chars to allmoves linkedList to record the game
+	public void addBoard(Piece[][] board ) {
+		String simpleBoard ="";
+		for (int i=0;i<8;i++) {
+			for (int j=0;j<8;j++) {
+				if (board[i][j]==null) {
+					simpleBoard+="0 ";
+				}
+				else if (board[i][j].color==1) simpleBoard=simpleBoard+ board[i][j].type+" ";
+				else simpleBoard= simpleBoard+Character.toUpperCase(board[i][j].type)+" ";
+			}
+		}
+		allMoves.add(simpleBoard);
 	}
 
 	public Piece[][] getBoard() {

@@ -10,6 +10,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".SavedGames"
+            android:label="@string/title_activity_saved_games"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.android17.MainActivity" />
+        </activity>
+        <activity
             android:name=".PlayGame"
             android:label="@string/title_activity_play_game"
             android:parentActivityName=".MainActivity"
