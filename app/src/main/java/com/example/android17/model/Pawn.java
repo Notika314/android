@@ -46,7 +46,6 @@ public class Pawn extends Piece {
 	 * @return True if move is valid and no parameters are wrong, False if something prevents the move from legally occurring
 	 */
 	public boolean move(Piece board[][], int x, int y, int color) {
-		System.out.println("Moving a pawn");
 		if (this.color != color) {
 			System.out.println("On 50");
 			return false;
@@ -73,8 +72,6 @@ public class Pawn extends Piece {
 		if (this.validMoves[x][y] == 2) {
 			board[x][y-this.color] = null;
 		}
-		System.out.println("On 75");
-
 		int i = this.xPos;
 		int j = this.yPos;
 		this.xPos = x;
@@ -83,6 +80,15 @@ public class Pawn extends Piece {
 		board[i][j] = null;
 		this.hasMoved = true;
 		return true;
+	}
+
+	public void moveBack(Piece board[][], int x, int y) {
+		int i = this.xPos;
+		int j = this.yPos;
+		this.xPos = x;
+		this.yPos = y;
+		board[x][y] = this;
+		board[i][j] = null;
 	}
 	
 	/**

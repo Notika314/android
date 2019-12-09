@@ -29,7 +29,7 @@ public abstract class Piece {
 	 * Defines the type of Piece that it is 
 	 * initialized to.
 	 */
-	char type;
+	public char type;
 	
 	/**
 	 * Defines whether the Piece has a valid and legal

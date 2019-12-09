@@ -1,7 +1,11 @@
 package com.example.android17;
 
+import com.example.android17.model.Bishop;
+import com.example.android17.model.Knight;
+import com.example.android17.model.Pawn;
 import com.example.android17.model.Piece;
 
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,8 +19,11 @@ import android.widget.AdapterView.OnItemClickListener;
 import com.example.android17.model.Game;
 import com.example.android17.model.Queen;
 import com.example.android17.model.King;
+import com.example.android17.model.Rook;
+
 import java.util.concurrent.TimeUnit;
 import android.graphics.Color;
+import android.app.AlertDialog;
 
 
 public class PlayGame extends AppCompatActivity implements OnItemClickListener {
@@ -77,6 +84,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                 return;
             } else {
                 pieceIsChosen=true;
+                System.out.println("TEST"+pieceToMove);
                 status.setText("OK");
                 view.setBackgroundColor(0x990000FF);
                 legalMoves(pieceToMove);
@@ -84,11 +92,19 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
             }
         } else {
             status.setText("Trying to move a piece");
+            int x = pieceToMove.xPos;
+            int y = pieceToMove.yPos;
             xFinal = position%8;
             yFinal = position/8;
             status.setText("Moving piece to "+xFinal+", "+yFinal+" , color:"+pieceToMove.color);
             if (pieceToMove.move(game.board, xFinal, yFinal, game.currMove)) {
                 status.setText("Choose a piece to move");
+                if (pieceToMove.type == 'p' &&
+                        ((pieceToMove.color == -1 && yFinal == 0) ||
+                                (pieceToMove.color == 1 && yFinal == 7))) {
+                    promote(x, y);
+                    return;
+                }
                 //sleep(1);
                 //adapter = new SquareAdapter(this, game.board);
                 //setContentView(R.layout.play_game);
@@ -142,9 +158,9 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                     pieceIsChosen=true;
                     tempView.setBackgroundColor(0x00000000);
                     status.setText("New Piece Selected");
+                    clearMoves();
                     view.setBackgroundColor(0x990000FF);
                     tempView = view;
-                    clearMoves();
                     legalMoves(pieceToMove);
                 }
                 else {
@@ -156,8 +172,11 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
     }
 
     public void legalMoves(Piece p) {
+        if (p.color != game.currMove) {
+            return;
+        }
         for (int i = 0; i < board.getChildCount(); i++) {
-            if (p.validMoves[i%8][i/8] != 0 && p.color == game.currMove) {
+            if (p.validMoves[i%8][i/8] != 0) {
                 ImageView view = (ImageView) board.getChildAt(i);
                 view.setBackgroundColor(0x9900FF00);
             }
@@ -169,6 +188,75 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
             ImageView view = (ImageView) board.getChildAt(i);
             view.setBackgroundColor(0x00000000);
         }
+    }
+
+
+    public void promote(int x, int y) {
+        String[] promo = {"Queen", "Bishop", "Knight", "Rook"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Pick a piece");
+        builder.setItems(promo, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int chosen) {
+                if (promo[chosen].equals("Queen")) {
+                    game.board[pieceToMove.xPos][pieceToMove.yPos] = new Queen(pieceToMove.color, pieceToMove.xPos, pieceToMove.yPos);
+                }
+                else if (promo[chosen].equals("Bishop")) {
+                    game.board[pieceToMove.xPos][pieceToMove.yPos] = new Bishop(pieceToMove.color, pieceToMove.xPos, pieceToMove.yPos);
+                }
+                else if (promo[chosen].equals("Knight")) {
+                    game.board[pieceToMove.xPos][pieceToMove.yPos] = new Knight(pieceToMove.color, pieceToMove.xPos, pieceToMove.yPos);
+                }
+                else if (promo[chosen].equals("Rook")) {
+                    game.board[pieceToMove.xPos][pieceToMove.yPos] = new Rook(pieceToMove.color, pieceToMove.xPos, pieceToMove.yPos);
+                }
+                pieceToMove = game.board[pieceToMove.xPos][pieceToMove.yPos];
+                promoteMove();
+            }
+        });
+        builder.setOnCancelListener(dialogInterface -> {
+            ((Pawn)pieceToMove).moveBack(game.board, x, y);
+            status.setText("Promotion Cancelled");
+            clearMoves();
+            pieceIsChosen = false;
+        });
+        builder.show();
+    }
+
+    private void promoteMove() {
+        board.setAdapter(adapter);
+        if (game.currMove == -1) {
+            whiteKing.isInCheck = false;
+        }
+        else {
+            blackKing.isInCheck = false;
+        }
+        game.currMove *= -1;
+        game.clearPassant(game.currMove);
+        game.updateValidMoves(-game.currMove);
+        game.updateValidMoves(game.currMove);
+        board.setOnTouchListener(new View.OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
+                return event.getAction() == MotionEvent.ACTION_MOVE;
+            }
+        });
+        if (game.currMove == -1) {
+            blackKing.generateValidMoves(game.board);
+            whiteKing.generateValidMoves(game.board);
+            if (whiteKing.isInCheck) {
+                status.setText("White in Check");
+            }
+        }
+        else {
+            whiteKing.generateValidMoves(game.board);
+            blackKing.generateValidMoves(game.board);
+            if (blackKing.isInCheck) {
+                status.setText("Black in Check");
+            }
+        }
+        tempView.setBackgroundColor(0x00000000);
+        clearMoves();
+        pieceIsChosen = false;
     }
 
 }
