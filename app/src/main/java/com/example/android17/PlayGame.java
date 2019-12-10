@@ -22,6 +22,8 @@ import com.example.android17.model.Queen;
 import com.example.android17.model.King;
 import com.example.android17.model.Rook;
 import android.widget.Button;
+
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.LinkedList;
 import android.graphics.Color;
@@ -78,6 +80,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
         draw_btn = (Button) findViewById(R.id.draw_btn);
         ai_btn = (Button) findViewById(R.id.ai_btn);
         undo_btn = (Button) findViewById(R.id.undo_btn);
+
         resign_btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v ) {
                 PlayGame activity = PlayGame.this;
@@ -93,7 +96,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                 activity.undo_btn.setEnabled(false);
                 activity.ai_btn.setEnabled(false);
                 chessBoardGridView.setOnItemClickListener(null);
-//                saveGame(game);
+//                saveGame(game);   need to implement saving the game
             }
         });
 
@@ -113,7 +116,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                         activity.undo_btn.setEnabled(false);
                         activity.ai_btn.setEnabled(false);
                         chessBoardGridView.setOnItemClickListener(null);
-//                        saveGame(game);
+//                        saveGame(game);     need to implement saving the game
                     }
                 }
             }
@@ -121,6 +124,92 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
 
         ai_btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v ) {
+                PlayGame activity = PlayGame.this;
+                SquareAdapter adapter = activity.adapter;
+                Game game = activity.game;
+                Piece pieceToMove = game.choseRandomPiece();
+//                pieceToMove.moveAtRandom(game.board);
+
+
+                ///////////
+
+                int x = pieceToMove.xPos;
+                int y = pieceToMove.yPos;
+                Random r = new Random();
+                int randomInd = r.nextInt(63);
+                while (pieceToMove.validMoves[randomInd%8][randomInd/8]<=0) {
+                    randomInd = r.nextInt(63);
+                }
+                xFinal = randomInd%8;
+                yFinal = randomInd/8;
+                status.setText("Moving piece to "+xFinal+", "+yFinal+" , color:"+pieceToMove.color);
+                if (pieceToMove.type == 'p' &&
+                        ((pieceToMove.color == -1 && yFinal == 0) ||
+                                (pieceToMove.color == 1 && yFinal == 7))) {
+                    promote();
+                    return;
+                }
+                if (pieceToMove.move(game.board, xFinal, yFinal, game.currMove)) {
+                    status.setText("Choose a piece to move");
+                    game.addBoard(game.board);
+                    color = game.currMove==-1? "black" : "white" ;
+                    status.setText("Choose a " + color+" piece to move");
+                    board.setAdapter(adapter);
+                    if (game.currMove == -1) {
+                        whiteKing.isInCheck = false;
+                    }
+                    else {
+                        blackKing.isInCheck = false;
+                    }
+                    game.currMove *= -1;
+                    game.clearPassant(game.currMove);
+                    game.updateValidMoves(-game.currMove);
+                    game.updateValidMoves(game.currMove);
+                    board.setOnTouchListener(new View.OnTouchListener() {
+                        public boolean onTouch(View v, MotionEvent event) {
+                            return event.getAction() == MotionEvent.ACTION_MOVE;
+                        }
+                    });
+                    if (game.currMove == -1) {
+                        blackKing.generateValidMoves(game.board);
+                        whiteKing.generateValidMoves(game.board);
+                        if (whiteKing.isInCheck) {
+                            status.setText("White in Check");
+                        }
+                    }
+                    else {
+                        whiteKing.generateValidMoves(game.board);
+                        blackKing.generateValidMoves(game.board);
+                        if (blackKing.isInCheck) {
+                            status.setText("Black in Check");
+                        }
+                    }
+
+                    King king2 = game.currMove==-1 ?  whiteKing : blackKing;
+                    if (king2.isInCheck && !king2.hasValidMove && !game.protector() && !game.blocker()) {
+                        String winner = game.currMove==-1? "Black" : "White" ;
+                        status.setText("Checkmate. "+winner+" wins");
+                        return;
+                    }
+                    if (game.hasNoValidMoves() ) {
+                        King king = game.currMove==-1 ?  whiteKing : blackKing;
+                        if (!king.isInCheck) {
+                            status.setText("Draw by stalemate");
+
+                        }
+                        else {
+                            String winner = game.currMove==-1? "Black" : "White" ;
+                            status.setText("Checkmate. "+winner+" wins");
+                            return;
+                        }
+                    }
+                    game.disarmShields();
+
+                    tempView.setBackgroundColor(0x00000000);
+                    clearMoves();
+                    pieceIsChosen = false;
+                }
+/////////////////////////
 
             }
         });
@@ -177,6 +266,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
             xFinal = position%8;
             yFinal = position/8;
             status.setText("Moving piece to "+xFinal+", "+yFinal+" , color:"+pieceToMove.color);
+//            this.game.findPiecesThatCanMove();  we only need this for ai
             if (pieceToMove.type == 'p' &&
                     ((pieceToMove.color == -1 && yFinal == 0) ||
                             (pieceToMove.color == 1 && yFinal == 7))) {

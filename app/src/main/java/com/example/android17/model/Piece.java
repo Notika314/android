@@ -1,5 +1,7 @@
 package com.example.android17.model;
 
+import java.util.Random;
+
 /**
  * This abstract class is the parent class to all the other
  * pieces. It allows us to execute some common functionality. It
@@ -141,6 +143,19 @@ public abstract class Piece {
 		board[i][j] = null;
 
 		return true;
+	}
+
+	public void moveAtRandom(Piece board[][]){
+		Random r = new Random();
+		int randomInd = r.nextInt(63);
+		while (validMoves[randomInd/8][randomInd%8]<=0) {
+			randomInd = r.nextInt(63);
+		}
+		move(board,randomInd/8,randomInd%8,this.color);
+//		int choice = validMoves.size();
+//		Random r = new Random();
+//		int randomInd = r.nextInt(choice);
+//		return piecesWithValidMoves.get(randomInd);
 	}
 	
 	/**

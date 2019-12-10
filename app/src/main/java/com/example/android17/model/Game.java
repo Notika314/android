@@ -1,6 +1,7 @@
 package com.example.android17.model;
  import java.util.LinkedList;
  import java.util.ArrayList;
+ import java.util.Random;
 /**
  * This class has some general Game rules along with game states that
  * are vital to the functioning of Chess.
@@ -14,7 +15,7 @@ public class Game {
 	 */
 	public GameView allViews;
 	public Piece[][] board;
-	
+	public ArrayList<Piece> piecesWithValidMoves;
 	/**
 	 * Defines which player has the current turn. Is set
 	 * to -1 for white and 1 for black.
@@ -27,6 +28,7 @@ public class Game {
 	 */
 	public Game() {
 		allViews = new GameView();
+//		piecesWithValidMoves = new ArrayList<Piece>();
 		currMove = -1;
 		board = new Piece[8][8];
 		board[0][0] = new Rook(1,0,0);
@@ -53,6 +55,33 @@ public class Game {
 		return;
 	}
 
+	public Piece choseRandomPiece() {
+		piecesWithValidMoves = new ArrayList<Piece>();
+		for (int i=0;i<8;i++) {
+			for (int j=0;j<8;j++) {
+				if (board[i][j]!=null && board[i][j].color==currMove && board[i][j].hasValidMove) {
+					piecesWithValidMoves.add(board[i][j]);
+				}
+			}
+		}
+	    int choice = piecesWithValidMoves.size();
+	    Random r = new Random();
+	    int randomInd = r.nextInt(choice);
+	    return piecesWithValidMoves.get(randomInd);
+    }
+
+
+
+//	public void findPiecesThatCanMove() {
+//	    piecesWithValidMoves = new ArrayList<Piece>();
+//	    for (int i=0;i<8;i++) {
+//	        for (int j=0;j<8;j++) {
+//	            if (board[i][j]!=null && board[i][j].color==currMove && board[i][j].hasValidMove) {
+//	                piecesWithValidMoves.add(board[i][j]);
+//                }
+//            }
+//        }
+//    }
 	//adding baord of chars to allmoves linkedList to record the game
 	public void addBoard(Piece[][] board ) {
 		String simpleBoard ="";
