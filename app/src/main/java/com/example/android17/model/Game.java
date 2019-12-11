@@ -84,18 +84,18 @@ public class Game {
 //    }
 	//adding baord of chars to allmoves linkedList to record the game
 	public void addBoard(Piece[][] board ) {
-		String simpleBoard ="";
+		String[][] simpleBoard =new String[8][8];
 		for (int i=0;i<8;i++) {
 			for (int j=0;j<8;j++) {
-				if (board[i][j]==null) {
-					simpleBoard+="00 ";
+				if (board[i][j]!=null) {
+					simpleBoard[i][j]=board[i][j].toString();
 				}
-				else if (board[i][j].color==1) simpleBoard=simpleBoard+"b"+ board[i][j].type+" ";
-				else simpleBoard= simpleBoard+"w"+board[i][j].type+" ";
+//				else if (board[i][j].color==1) simpleBoard=simpleBoard+"b"+ board[i][j].type+" ";
+//				else simpleBoard= simpleBoard+"w"+board[i][j].type+" ";
 			}
 		}
 		allViews.addView(simpleBoard);
-		System.out.println(simpleBoard);
+//		System.out.println(simpleBoard);
 	}
 
 	public Piece[][] getBoard() {

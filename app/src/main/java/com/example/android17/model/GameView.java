@@ -1,6 +1,5 @@
 package com.example.android17.model;
 
-import java.util.LinkedList;
 import java.io.Serializable;
 //import java.util.Date;
 import java.util.*;
@@ -12,13 +11,13 @@ public class GameView implements Serializable {
     public String name;
     static Context context;
     public Date date;
-    public LinkedList<String> moves;
+    public LinkedList<String[][]> moves;
     static final long serialVersionUID = 1L;
     public GameView() {
-        moves = new LinkedList<String>();
+        moves = new LinkedList<String[][]>();
     }
 
-    public void addView(String view){
+    public void addView(String[][] view){
         moves.add(view);
     }
 

@@ -164,7 +164,7 @@ public class King extends Piece {
 	}
 	
 	/**
-	 * The logic for how a Pawn generates the legal moves available to it. Starts
+	 * The logic for how a King generates the legal moves available to it. Starts
 	 * with flags set to false and a clear board that is only populated and set to 
 	 * true if there is some available move allowed. All moves generated are legal
 	 * and do not require further pruning.

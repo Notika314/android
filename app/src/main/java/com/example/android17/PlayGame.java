@@ -130,7 +130,6 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                 Piece pieceToMove = game.choseRandomPiece();
 //                pieceToMove.moveAtRandom(game.board);
 
-
                 ///////////
 
                 int x = pieceToMove.xPos;
@@ -147,6 +146,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                         ((pieceToMove.color == -1 && yFinal == 0) ||
                                 (pieceToMove.color == 1 && yFinal == 7))) {
                     promote();
+                    game.addBoard(game.board);
                     return;
                 }
                 if (pieceToMove.move(game.board, xFinal, yFinal, game.currMove)) {
@@ -271,6 +271,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                     ((pieceToMove.color == -1 && yFinal == 0) ||
                             (pieceToMove.color == 1 && yFinal == 7))) {
                 promote();
+                this.game.addBoard(this.game.board);
                 return;
             }
             if (pieceToMove.move(game.board, xFinal, yFinal, game.currMove)) {
@@ -379,7 +380,6 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
             view.setBackgroundColor(0x00000000);
         }
     }
-    //configuring account
 
 
     public void promote() {
@@ -403,6 +403,8 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                     game.board[pieceToMove.xPos][pieceToMove.yPos] = new Rook(pieceToMove.color, pieceToMove.xPos, pieceToMove.yPos);
                 }
                 pieceToMove = game.board[pieceToMove.xPos][pieceToMove.yPos];
+                game.addBoard(game.board);
+                //record the boardView here instead of top method
                 promoteMove();
             }
         });
@@ -426,6 +428,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
         game.clearPassant(game.currMove);
         game.updateValidMoves(-game.currMove);
         game.updateValidMoves(game.currMove);
+
         board.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
                 return event.getAction() == MotionEvent.ACTION_MOVE;
