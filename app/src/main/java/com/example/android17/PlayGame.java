@@ -96,6 +96,10 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
         board = findViewById(R.id.board);
         board.setAdapter(adapter);
         board.setOnItemClickListener(this);
+        status = findViewById(R.id.statusView);
+
+    //    status.setText("Choose a white piece to move");
+
         resign_btn = (Button) findViewById(R.id.resign_btn);
         draw_btn = (Button) findViewById(R.id.draw_btn);
         ai_btn = (Button) findViewById(R.id.ai_btn);
@@ -133,6 +137,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                 } else {
                     if (activity.drawOfferred) {
                         status.setText("Draw accepted. End of the game");
+                        terminus("Draw");
                         activity.resign_btn.setEnabled(false);
                         activity.draw_btn.setEnabled(false);
                         activity.undo_btn.setEnabled(false);
@@ -146,9 +151,9 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
 
         ai_btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v ) {
-                PlayGame activity = PlayGame.this;
-                SquareAdapter adapter = activity.adapter;
-                Game game = activity.game;
+                //PlayGame activity = PlayGame.this;
+                //SquareAdapter adapter = activity.adapter;
+                //Game game = activity.game;
                 Piece pieceToMove = game.choseRandomPiece();
                 int x = pieceToMove.xPos;
                 int y = pieceToMove.yPos;
@@ -224,7 +229,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                     }
                     game.disarmShields();
                     recording.addView(game.board);
-                    tempView.setBackgroundColor(0x00000000);
+                    //tempView.setBackgroundColor(0x00000000);
                     clearMoves();
                     pieceIsChosen = false;
 //                    game.copyBoard();
@@ -322,8 +327,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         this.drawOfferred = false;
-        status = findViewById(R.id.statusView);
-        status.setTextColor(0xFFFFFFFF);
+        status.setTextColor(0xFFFFFFFFg);
         if (!pieceIsChosen) {
             pieceToMove = (Piece) adapter.getItem(position);
             if (pieceToMove == null) {
@@ -407,17 +411,19 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                 if (king2.isInCheck && !king2.hasValidMove && !game.protector() && !game.blocker()) {
                     String winner = game.currMove==-1? "Black" : "White" ;
                     status.setText("Checkmate. "+winner+" wins");
+                    terminus("CheckMate");
                     return;
                 }
                 if (game.hasNoValidMoves() ) {
                     King king = game.currMove==-1 ?  whiteKing : blackKing;
                     if (!king.isInCheck) {
                         status.setText("Draw by stalemate");
-
+                        terminus("Stalemate");
                     }
                     else {
                         String winner = game.currMove==-1? "Black" : "White" ;
                         status.setText("Checkmate. "+winner+" wins");
+                        terminus("CheckMate");
                         return;
                     }
                 }
