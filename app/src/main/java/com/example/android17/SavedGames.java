@@ -52,10 +52,14 @@ public class SavedGames extends AppCompatActivity implements OnItemClickListener
                 new ArrayAdapter<>(this, R.layout.game, gamesNames);
         games.setAdapter(adapter);
         games.setOnItemClickListener(this);
+
         name_btn = findViewById(R.id.name_btn);
         delete_btn = findViewById(R.id.delete_btn);
         date_btn = findViewById(R.id.date_btn);
         open_btn = findViewById(R.id.open_btn);
+        open_btn.setEnabled(false);
+        delete_btn.setEnabled(false);
+
         name_btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v ) {
                 gamesNames = GameView.views.stream().sorted(Comparator.comparing(GameView::getName)).
@@ -80,6 +84,8 @@ public class SavedGames extends AppCompatActivity implements OnItemClickListener
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(con, R.layout.game, gamesNames);
                 games.setAdapter(adapter);
                 index = -1;
+                open_btn.setEnabled(false);
+                delete_btn.setEnabled(false);
             }
         });
         date_btn.setOnClickListener(new View.OnClickListener() {
@@ -97,6 +103,8 @@ public class SavedGames extends AppCompatActivity implements OnItemClickListener
                 GameView.index = index;
                 Intent intent = new Intent(con, ReplayGame.class);
                 index = -1;
+                open_btn.setEnabled(false);
+                delete_btn.setEnabled(false);
                 //lastViewed.setBackgroundColor(0x00000000);
                 lastViewed.setSelected(false);
                 startActivity(intent);
@@ -108,10 +116,11 @@ public class SavedGames extends AppCompatActivity implements OnItemClickListener
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
         if (lastViewed != null) {
-            lastViewed.setBackgroundColor(0x00000000);
             lastViewed.setSelected(false);
         }
-        //view.setBackgroundColor(ContextCompat.getColor(this, android.R.color.holo_blue_light));
+        view.setBackgroundColor(0x00000000);
+        open_btn.setEnabled(true);
+        delete_btn.setEnabled(true);
         view.setSelected(true);
         lastViewed = view;
         index = position;
