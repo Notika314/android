@@ -36,7 +36,7 @@
                 android:textColor="#F7F2F3"
                 android:textColorHighlight="#D2000F"
                 android:textColorLink="#00E60606"
-                android:textSize="27dp"
+                android:textSize="20dp"
                 android:textStyle="bold"
                 tools:text="Start Game by dragging white piece" />
         </LinearLayout>

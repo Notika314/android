@@ -185,12 +185,6 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                     game.clearPassant(game.currMove);
                     game.updateValidMoves(-game.currMove);
                     game.updateValidMoves(game.currMove);
-
-//                    board.setOnTouchListener(new View.OnTouchListener() {
-//                        public boolean onTouch(View v, MotionEvent event) {
-//                            return event.getAction() == MotionEvent.ACTION_MOVE;
-//                        }
-//                    });
                     if (game.currMove == -1) {
                         blackKing.generateValidMoves(game.board);
                         whiteKing.generateValidMoves(game.board);
@@ -236,8 +230,6 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
 //                    game.copyBoard();
 
                 }
-
-                /////////////////////
             }
         });
         undo_btn.setOnClickListener(new View.OnClickListener() {
@@ -265,18 +257,6 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                     game.clearPassant(game.currMove);
                     game.updateValidMoves(-game.currMove);
                     game.updateValidMoves(game.currMove);
-
-//                    adapter = new SquareAdapter(PlayGame.this, game.board);
-//                    setContentView(R.layout.play_game);
-//                    final GridView chessBoardGridView = findViewById(R.id.board);
-//                    chessBoardGridView.setAdapter(adapter);
-//                    chessBoardGridView.setOnItemClickListener(PlayGame.this);
-//
-//                    board.setOnTouchListener(new View.OnTouchListener() {
-//                        public boolean onTouch(View v, MotionEvent event) {
-//                            return event.getAction() == MotionEvent.ACTION_MOVE;
-//                        }
-//                    });
                     if (game.currMove == -1) {
                         blackKing.generateValidMoves(game.board);
                         whiteKing.generateValidMoves(game.board);
@@ -315,25 +295,16 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
 
                     clearMoves();
                     pieceIsChosen = false;
-
-//                    adapter = new SquareAdapter(PlayGame.this, game.board);
-//                    setContentView(R.layout.play_game);
-//                    final GridView chessBoardGridView = findViewById(R.id.board);
-//                    chessBoardGridView.setAdapter(adapter);
-//                    chessBoardGridView.setOnItemClickListener(PlayGame.this);
                     board.setAdapter(adapter);
-
                     board.setOnTouchListener(new View.OnTouchListener() {
                         public boolean onTouch(View v, MotionEvent event) {
                             return event.getAction() == MotionEvent.ACTION_MOVE;
                         }
                     });
-
                     canUndo = false;
                 }
             }
         });
-//        allMoves.add(this.game.board);
         board.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
                 return event.getAction() == MotionEvent.ACTION_MOVE;
@@ -650,6 +621,3 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
     }
 
 }
-//notes:
-// status: feedback when wrong color selected
-//
