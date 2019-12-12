@@ -8,6 +8,8 @@ import androidx.navigation.ui.AppBarConfiguration;
 
 import android.widget.Button;
 
+import com.example.android17.model.GameView;
+
 public class MainActivity extends AppCompatActivity {
     private Button newGame;
     private Button replayGame;
@@ -15,6 +17,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        GameView.context = this;
         //BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.

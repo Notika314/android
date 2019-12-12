@@ -11,9 +11,9 @@ import com.example.android17.model.Piece;
 
 public class SquareAdapter extends BaseAdapter {
     private Context context;
-    private Piece[][] board;
+    private Object[][] board;
 
-    public SquareAdapter(Context c, Piece[][] board) {
+    public SquareAdapter(Context c, Object[][] board) {
         this.context = c;
         this.board = board;
     }
@@ -70,7 +70,7 @@ public class SquareAdapter extends BaseAdapter {
                 }
             }
             */
-            Piece p = board[position%8][position/8];
+            Object p = board[position%8][position/8];
             if( p != null) {
                 view.setImageResource(context.getResources().getIdentifier(p.toString(),
                         "drawable", context.getPackageName()));

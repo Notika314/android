@@ -1,6 +1,7 @@
 package com.example.android17;
 
 import com.example.android17.model.Bishop;
+import com.example.android17.model.GameView;
 import com.example.android17.model.Knight;
 import com.example.android17.model.Pawn;
 import com.example.android17.model.Piece;
@@ -9,8 +10,11 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.text.InputType;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.AdapterView;
@@ -23,11 +27,13 @@ import com.example.android17.model.King;
 import com.example.android17.model.Rook;
 import android.widget.Button;
 
+import java.io.IOException;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.LinkedList;
 import android.graphics.Color;
 import android.app.AlertDialog;
+import android.widget.Toast;
 
 
 public class PlayGame extends AppCompatActivity implements OnItemClickListener {
@@ -46,6 +52,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
     private King whiteKing;
     private King blackKing;
     private View tempView;
+    private GameView recording;
     void sleep(int sec) {
         try {
             TimeUnit.SECONDS.sleep(1);}
@@ -59,6 +66,8 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
         //from chess class in Chess project
 //        this.allMoves = new LinkedList<Piece[8][8]>();
         this.game = new Game();
+        this.recording = new GameView();
+        recording.addView(game.board);
         this.drawOfferred = true;
         whiteKing = (King)game.board[4][7];
         blackKing = (King)game.board[4][0];
@@ -67,7 +76,6 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
         game.updateValidMoves(1);
         whiteKing.generateValidMoves(game.board);
         blackKing.generateValidMoves(game.board);
-
         adapter = new SquareAdapter(this, game.board);
         setContentView(R.layout.play_game);
         final GridView chessBoardGridView = findViewById(R.id.board);
@@ -91,6 +99,8 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                 String winner  = game.currMove==-1? "Blacks": "Whites";
                 status.setText(loser+" resigned. "+ winner+" won the game.");
 //                activity.movetn.setEnabled(false);
+                terminus("Resignation");
+
                 activity.resign_btn.setEnabled(false);
                 activity.draw_btn.setEnabled(false);
                 activity.undo_btn.setEnabled(false);
@@ -204,6 +214,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                         }
                     }
                     game.disarmShields();
+                    recording.addView(game.board);
 
                     tempView.setBackgroundColor(0x00000000);
                     clearMoves();
@@ -328,6 +339,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                     }
                 }
                 game.disarmShields();
+                recording.addView(game.board);
 
                 tempView.setBackgroundColor(0x00000000);
                 clearMoves();
@@ -445,9 +457,81 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                 status.setText("Black in Check");
             }
         }
+        King king2 = game.currMove==-1 ?  whiteKing : blackKing;
+        if (king2.isInCheck && !king2.hasValidMove && !game.protector() && !game.blocker()) {
+            String winner = game.currMove==-1? "Black" : "White" ;
+            status.setText("Checkmate. "+winner+" wins");
+            terminus("Checkmate");
+            return;
+        }
+        if (game.hasNoValidMoves() ) {
+            King king = game.currMove==-1 ?  whiteKing : blackKing;
+            if (!king.isInCheck) {
+                status.setText("Draw by stalemate");
+                terminus("Stalemate");
+            }
+            else {
+                String winner = game.currMove==-1? "Black" : "White" ;
+                status.setText("Checkmate. "+winner+" wins");
+                terminus("Checkmate");
+            }
+            return;
+
+        }
+        game.disarmShields();
+        recording.addView(game.board);
         tempView.setBackgroundColor(0x00000000);
         clearMoves();
         pieceIsChosen = false;
+    }
+
+    private void terminus(String str) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Game Over by "+str);
+        builder.setMessage("Would you like to save a recording?");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                terminusHelper(str);
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(getApplicationContext(),
+                        "No Button Clicked",Toast.LENGTH_SHORT).show();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void terminusHelper(String str) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Recording Name:");
+        EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                recording.saveName(input.getText().toString());
+                recording.addToList();
+                try {
+                    recording.writeGameView();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        builder.setNegativeButton("Back", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                terminus(str);
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
 }

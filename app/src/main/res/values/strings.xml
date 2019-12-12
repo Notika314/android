@@ -9,6 +9,8 @@
     <string name="ai">AI</string>
     <string name="draw">DRAW</string>
     <string name="resign">RESIGN</string>
+    <string name="back">BACK</string>
+    <string name="next">NEXT</string>
     <string name="undo">UNDO</string>
     <string name="textview">Choose a white piece to move</string>
     <string name="saved_games">Saved Games</string>

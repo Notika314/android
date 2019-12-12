@@ -94,7 +94,7 @@ public class Game {
 				else simpleBoard= simpleBoard+"w"+board[i][j].type+" ";
 			}
 		}
-		allViews.addView(simpleBoard);
+		//allViews.addView(simpleBoard);
 		System.out.println(simpleBoard);
 	}
 

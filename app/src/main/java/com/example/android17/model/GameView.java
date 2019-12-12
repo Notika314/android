@@ -1,5 +1,6 @@
 package com.example.android17.model;
 
+import java.text.SimpleDateFormat;
 import java.util.LinkedList;
 import java.io.Serializable;
 //import java.util.Date;
@@ -7,19 +8,34 @@ import java.util.*;
 import java.io.*;
 import android.content.Context;
 
-public class GameView implements Serializable {
+public class GameView implements Serializable, Comparable<GameView> {
     public static ArrayList<GameView> views=new ArrayList<GameView>();
+    public static int index;
     public String name;
-    static Context context;
+    public static Context context;
     public Date date;
-    public LinkedList<String> moves;
+    public LinkedList<String[][]> moves;
     static final long serialVersionUID = 1L;
     public GameView() {
-        moves = new LinkedList<String>();
+        this.moves = new LinkedList<String[][]>();
     }
 
-    public void addView(String view){
-        moves.add(view);
+    public void addView(Piece board[][]){
+        String[][] temp = new String[8][8];
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (board[i][j] != null) {
+                    temp[i][j] = board[i][j].toString();
+                }
+            }
+        }
+        this.moves.add(temp);
+    }
+
+    public void addToList() {
+        int i = Collections.binarySearch(views, this);
+        i = ~i;
+        views.add(i, this);
     }
 
     public boolean equals(Object o) {
@@ -31,20 +47,24 @@ public class GameView implements Serializable {
 
     public void saveName(String name) {
         this.name = name;
-        this.date = new Date();
+        this.date = new Date(System.currentTimeMillis());
 //        views.add(this);
+    }
+
+    public String toString() {
+        SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+        return this.name + " saved on " + df.format(this.date);
     }
 
     public int compareTo(GameView o) {
         return this.date.compareTo(o.date);
     }
 
-
-    public static void writeGameView (GameView view) throws IOException {
-        String filename = "data/games/"+view.name+".ser";
-        FileOutputStream fos = context.openFileOutput(filename, Context.MODE_PRIVATE);
+    public void writeGameView () throws IOException {
+        String filename = context.getFilesDir()+"/"+this.name+".ser";
+        FileOutputStream fos = new FileOutputStream(filename);
         ObjectOutputStream os = new ObjectOutputStream(fos);
-        os.writeObject(view);
+        os.writeObject(this);
         os.close();
         fos.close();
     }
