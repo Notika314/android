@@ -31,14 +31,14 @@
                 android:background="#0D0001"
                 android:fontFamily="monospace"
                 android:padding="10dp"
-                android:text="@string/textview"
+                android:text="@string/press_next_to_start_a_game"
                 android:textAllCaps="false"
                 android:textColor="#F7F2F3"
                 android:textColorHighlight="#D2000F"
                 android:textColorLink="#00E60606"
-                android:textSize="20dp"
+                android:textSize="20sp"
                 android:textStyle="bold"
-                tools:text="Start Game by dragging white piece" />
+                tools:text="Press NEXT to start the game" />
         </LinearLayout>
 
         <RelativeLayout

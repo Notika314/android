@@ -51,42 +51,38 @@ public class ReplayGame extends AppCompatActivity {
 
         status = findViewById(R.id.statusView);
         status.setTextColor(0xFFFFFFFF);
-        status.setText("Press next to play the game");
+        status.setText("Press NEXT to play the game");
         back_btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v ) {
                 status.setTextSize(20);
                 status.setTextColor(0xFFFFFFFF);
+                next_btn.setEnabled(true);
                 if (iterate.hasPrevious()) {
-                    status.setText("Press next to go forward, back to go previous move");
+                    status.setText("Press NEXT to go forward, BACK to go previous move");
                     adapter = new SquareAdapter(con, iterate.previous());
                     board.setAdapter(adapter);
 
                 }
                 else {
-                    status.setText("Press next to go forward");
+                    back_btn.setEnabled(false);
+                    status.setText("Press NEXT to go forward");
                     return;
                 }
             }
         });
         next_btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v ) {
+                back_btn.setEnabled(true);
                 if (iterate.hasNext()) {
-                    status.setText("Press next to go forward, back to go previous move");
+                    status.setText("Press NEXT to go forward, BACK to go previous move");
                     adapter = new SquareAdapter(con, iterate.next());
                     board.setAdapter(adapter);
-                    back_btn.setEnabled(true);
-                    //
-//                    if (!iterate.hasNext()) {
-//                        next_btn.setEnabled(false);
-//                    }
-                    //
-//                    back_btn.setEnabled(true);
                 }
                 else {
                     status.setTextColor(0xFFD2000F);
                     status.setTextSize(40);
                     status.setText("GAME OVER");
-//                    next_btn.setEnabled(false);
+                    next_btn.setEnabled(false);
                     return;
                 }
             }

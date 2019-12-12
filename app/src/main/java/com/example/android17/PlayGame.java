@@ -167,6 +167,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                 status.setText("Moving piece to "+xFinal+", "+yFinal+" , color:"+pieceToMove.color);
                 if (pieceToMove.type == 'p' && ((pieceToMove.color == -1 && yFinal == 0) ||
                         (pieceToMove.color == 1 && yFinal == 7))) {
+                    status.setTextColor(0xFFFFFFFF);
                     promote();
                     game.addBoard(game.board);
                     canUndo = true;
@@ -175,9 +176,10 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                 }
                 if (pieceToMove.move(game,game.board, xFinal, yFinal, game.currMove)) {
                     canUndo = true;
-                    status.setText("Choose a piece to move");
+//                    status.setText("Choose a piece to move");
                     game.addBoard(game.board);
                     color = game.currMove==-1? "black" : "white" ;
+                    status.setTextColor(0xFFFFFFFF);
                     status.setText("Choose a " + color+" piece to move");
                     board.setAdapter(adapter);
                     if (game.currMove == -1) {
@@ -306,7 +308,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                             return event.getAction() == MotionEvent.ACTION_MOVE;
                         }
                     });
-                    canUndo = false;
+                    canUndo = false;undo_btn.setEnabled(false);
                 }
             }
         });
@@ -327,7 +329,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         this.drawOfferred = false;
-        status.setTextColor(0xFFFFFFFFg);
+        status.setTextColor(0xFFFFFFFF);
         if (!pieceIsChosen) {
             pieceToMove = (Piece) adapter.getItem(position);
             if (pieceToMove == null) {
@@ -345,8 +347,6 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                     color = game.currMove==-1? "Whites" : "Blacks";
                     status.setTextColor(0xFFD2000F);
                     status.setText("It's "+ color +" turn to move.");
-
-                    // ?? need this??
                     pieceIsChosen=false;
                 }
                 view.setBackgroundColor(0x990000FF);
@@ -433,8 +433,6 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                 tempView.setBackgroundColor(0x00000000);
                 clearMoves();
                 pieceIsChosen = false;
-//                game.copyBoard();
-//                allMoves.add(this.game.board);
             }
             else {
                 if (xFinal == pieceToMove.xPos && yFinal == pieceToMove.yPos) {
