@@ -5,6 +5,8 @@ import com.example.android17.model.GameView;
 import com.example.android17.model.Knight;
 import com.example.android17.model.Pawn;
 import com.example.android17.model.Piece;
+
+import android.content.Context;
 import android.content.Intent;
 import android.content.DialogInterface;
 import android.graphics.Color;
@@ -14,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.text.InputType;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -55,6 +58,8 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
     private King blackKing;
     private View tempView;
     private GameView recording;
+    private Context con;
+
     void sleep(int sec) {
         try {
             TimeUnit.SECONDS.sleep(1);}
@@ -65,6 +70,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        con = this;
         //from chess class in Chess project
 //        this.allMoves = new LinkedList<Piece[8][8]>();
         this.game = new Game();
@@ -82,12 +88,14 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
         blackKing.generateValidMoves(game.board);
         adapter = new SquareAdapter(this, game.board);
         setContentView(R.layout.play_game);
-        final GridView chessBoardGridView = findViewById(R.id.board);
-        chessBoardGridView.setAdapter(adapter);
-        chessBoardGridView.setOnItemClickListener(this);
+        //final GridView chessBoardGridView = findViewById(R.id.board);
+        //chessBoardGridView.setAdapter(adapter);
+        //chessBoardGridView.setOnItemClickListener(this);
 //        resign_btn.setOnClickListener()
         pieceIsChosen=false;
-        this.board = chessBoardGridView;
+        board = findViewById(R.id.board);
+        board.setAdapter(adapter);
+        board.setOnItemClickListener(this);
         resign_btn = (Button) findViewById(R.id.resign_btn);
         draw_btn = (Button) findViewById(R.id.draw_btn);
         ai_btn = (Button) findViewById(R.id.ai_btn);
@@ -109,7 +117,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                 activity.draw_btn.setEnabled(false);
                 activity.undo_btn.setEnabled(false);
                 activity.ai_btn.setEnabled(false);
-                chessBoardGridView.setOnItemClickListener(null);
+                board.setOnItemClickListener(null);
 //                saveGame(game);   need to implement saving the game
             }
         });
@@ -129,7 +137,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                         activity.draw_btn.setEnabled(false);
                         activity.undo_btn.setEnabled(false);
                         activity.ai_btn.setEnabled(false);
-                        chessBoardGridView.setOnItemClickListener(null);
+                        board.setOnItemClickListener(null);
 //                        saveGame(game);     need to implement saving the game
                     }
                 }
@@ -234,16 +242,16 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
         });
         undo_btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v ) {
-                PlayGame activity = PlayGame.this;
-                SquareAdapter adapter = activity.adapter;
-                Game game = activity.game;
+                //PlayGame activity = PlayGame.this;
+                //Game game = activity.game;
                 if (!canUndo) {
                     status.setText("Cannot use undo button until a move is made");
                 } else {
                     game.board = game.copyBoard(game.prevBoard);
+                    adapter = new SquareAdapter(con, game.board);
 
-                    game.addBoard(game.board);
-
+                    //game.addBoard(game.board);
+                    board.setAdapter(adapter);
                     color = game.currMove==-1? "black" : "white" ;
                     status.setText("Choose a " + color+" piece to move");
 //                    board.setAdapter(adapter);
