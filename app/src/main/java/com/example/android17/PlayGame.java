@@ -96,6 +96,10 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
         board = findViewById(R.id.board);
         board.setAdapter(adapter);
         board.setOnItemClickListener(this);
+        status = findViewById(R.id.statusView);
+
+    //    status.setText("Choose a white piece to move");
+
         resign_btn = (Button) findViewById(R.id.resign_btn);
         draw_btn = (Button) findViewById(R.id.draw_btn);
         ai_btn = (Button) findViewById(R.id.ai_btn);
@@ -146,9 +150,9 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
 
         ai_btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v ) {
-                PlayGame activity = PlayGame.this;
-                SquareAdapter adapter = activity.adapter;
-                Game game = activity.game;
+                //PlayGame activity = PlayGame.this;
+                //SquareAdapter adapter = activity.adapter;
+                //Game game = activity.game;
                 Piece pieceToMove = game.choseRandomPiece();
                 int x = pieceToMove.xPos;
                 int y = pieceToMove.yPos;
@@ -230,7 +234,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                     }
                     game.disarmShields();
                     recording.addView(game.board);
-                    tempView.setBackgroundColor(0x00000000);
+                    //tempView.setBackgroundColor(0x00000000);
                     clearMoves();
                     pieceIsChosen = false;
 //                    game.copyBoard();
@@ -351,7 +355,6 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         this.drawOfferred = false;
-        status = findViewById(R.id.statusView);
         status.setTextColor(0xFFFFFFFF);
         if (!pieceIsChosen) {
             pieceToMove = (Piece) adapter.getItem(position);
