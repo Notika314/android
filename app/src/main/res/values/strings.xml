@@ -19,6 +19,7 @@
     <string name="textview">Choose a white piece to move</string>
     <string name="saved_games">Saved Games</string>
     <string name="title_activity_saved_games">SavedGames</string>
+    <string name="press_next_to_start_a_game">Press NEXT to start a game</string>
     <string-array name = "games_array">
         <item>Game 1</item>
         <item>Game 2</item>

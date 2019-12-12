@@ -11,7 +11,7 @@ import android.widget.Adapter;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.GridView;
-
+import android.widget.TextView;
 import com.example.android17.model.Game;
 import com.example.android17.model.GameView;
 import com.example.android17.model.King;
@@ -29,11 +29,12 @@ public class ReplayGame extends AppCompatActivity {
     private ListIterator<String[][]> iterate;
     private String[][] current;
     private Context con = this;
-
+    private TextView status;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         recording = GameView.views.get(GameView.index);
+
         super.onCreate(savedInstanceState);
         LinkedList<String[][]> first = recording.moves;
         iterate = first.listIterator();
@@ -44,25 +45,44 @@ public class ReplayGame extends AppCompatActivity {
         back_btn = findViewById(R.id.back_btn);
         next_btn = findViewById(R.id.next_btn);
 
+        ///
+        back_btn.setEnabled(false);
+         ////       ///
+
+        status = findViewById(R.id.statusView);
+        status.setTextColor(0xFFFFFFFF);
+        status.setText("Press NEXT to play the game");
         back_btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v ) {
+                status.setTextSize(20);
+                status.setTextColor(0xFFFFFFFF);
+                next_btn.setEnabled(true);
                 if (iterate.hasPrevious()) {
+                    status.setText("Press NEXT to go forward, BACK to go previous move");
                     adapter = new SquareAdapter(con, iterate.previous());
                     board.setAdapter(adapter);
+
                 }
                 else {
+                    back_btn.setEnabled(false);
+                    status.setText("Press NEXT to go forward");
                     return;
                 }
             }
         });
         next_btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v ) {
+                back_btn.setEnabled(true);
                 if (iterate.hasNext()) {
+                    status.setText("Press NEXT to go forward, BACK to go previous move");
                     adapter = new SquareAdapter(con, iterate.next());
                     board.setAdapter(adapter);
                 }
                 else {
-                    System.out.println("END OF THE ROAD");
+                    status.setTextColor(0xFFD2000F);
+                    status.setTextSize(40);
+                    status.setText("GAME OVER");
+                    next_btn.setEnabled(false);
                     return;
                 }
             }

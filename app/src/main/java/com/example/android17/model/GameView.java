@@ -11,6 +11,7 @@ import android.content.Context;
 public class GameView implements Serializable, Comparable<GameView> {
     public static ArrayList<GameView> views=new ArrayList<GameView>();
     public static int index;
+    public String winner;
     public String name;
     public static Context context;
     public Date date;
