@@ -61,7 +61,7 @@ public class SavedGames extends AppCompatActivity implements OnItemClickListener
     private void loadInFiles() throws IOException, ClassNotFoundException {
         File dir = new File(GameView.context.getFilesDir()+"/");
         /*
-        File file = new File(dir, "null.ser");
+        File file = new File(dir, "Second.ser");
         file.delete();*/
         File[] files = dir.listFiles(new FilenameFilter() {
             public boolean accept(File dir, String name) {

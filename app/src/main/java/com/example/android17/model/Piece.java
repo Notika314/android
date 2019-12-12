@@ -97,7 +97,7 @@ public abstract class Piece {
 	 * @return A Copied Piece.
 	 */
 	public abstract Piece copy();
-	
+	public abstract Piece createCopy();
 	
 	/**
 	 * Abstract method that is implemented in the subclasses. Allows
@@ -117,7 +117,7 @@ public abstract class Piece {
 	 * @param color The color that is attempting to move, ensures strict order is adhered to in chess.
 	 * @return True if move is valid and no parameters are wrong, False if something prevents the move from legally occurring.
 	 */
-	public boolean move(Piece board[][], int x, int y, int color) {
+	public boolean move(Game game,Piece board[][], int x, int y, int color) {
 //		System.out.println("Moving a piece");
 		if (this.color != color) {
 			return false;
@@ -128,6 +128,7 @@ public abstract class Piece {
 		if (this.validMoves[x][y] == 0) {
 			return false;
 		}
+		game.copyBoard(board);
 		if (this.color == -1) {
 			Piece.wKingIsInDanger = new int[] {-1, -1, -1, -1};
 		}
@@ -145,13 +146,13 @@ public abstract class Piece {
 		return true;
 	}
 
-	public void moveAtRandom(Piece board[][]){
+	public void moveAtRandom(Game game,Piece board[][]){
 		Random r = new Random();
 		int randomInd = r.nextInt(63);
 		while (validMoves[randomInd/8][randomInd%8]<=0) {
 			randomInd = r.nextInt(63);
 		}
-		move(board,randomInd/8,randomInd%8,this.color);
+		move(game,board,randomInd/8,randomInd%8,this.color);
 //		int choice = validMoves.size();
 //		Random r = new Random();
 //		int randomInd = r.nextInt(choice);

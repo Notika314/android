@@ -37,9 +37,11 @@ import android.widget.Toast;
 
 
 public class PlayGame extends AppCompatActivity implements OnItemClickListener {
+    //need this for undo - to know if there are previous steps to revert back to
+    public boolean canUndo;
+
     public Button resign_btn, draw_btn, undo_btn, ai_btn;
     private boolean pieceIsChosen;
-//    public LinkedList<Piece[][]> allMoves;
     String color;
     public boolean drawOfferred;
     private Game game;
@@ -68,10 +70,12 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
         this.game = new Game();
         this.recording = new GameView();
         recording.addView(game.board);
+        //set hasMoved to false until first move happens
+        canUndo = false;
         this.drawOfferred = true;
         whiteKing = (King)game.board[4][7];
         blackKing = (King)game.board[4][0];
-        boolean drawOffer = false;
+//        boolean drawOffer = false;
         game.updateValidMoves(-1);
         game.updateValidMoves(1);
         whiteKing.generateValidMoves(game.board);
@@ -138,11 +142,6 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                 SquareAdapter adapter = activity.adapter;
                 Game game = activity.game;
                 Piece pieceToMove = game.choseRandomPiece();
-//                pieceToMove.moveAtRandom(game.board);
-
-
-                ///////////
-
                 int x = pieceToMove.xPos;
                 int y = pieceToMove.yPos;
                 Random r = new Random();
@@ -153,13 +152,16 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                 xFinal = randomInd%8;
                 yFinal = randomInd/8;
                 status.setText("Moving piece to "+xFinal+", "+yFinal+" , color:"+pieceToMove.color);
-                if (pieceToMove.type == 'p' &&
-                        ((pieceToMove.color == -1 && yFinal == 0) ||
-                                (pieceToMove.color == 1 && yFinal == 7))) {
+                if (pieceToMove.type == 'p' && ((pieceToMove.color == -1 && yFinal == 0) ||
+                        (pieceToMove.color == 1 && yFinal == 7))) {
                     promote();
+                    game.addBoard(game.board);
+                    canUndo = true;
+//                    game.copyBoard();
                     return;
                 }
-                if (pieceToMove.move(game.board, xFinal, yFinal, game.currMove)) {
+                if (pieceToMove.move(game,game.board, xFinal, yFinal, game.currMove)) {
+                    canUndo = true;
                     status.setText("Choose a piece to move");
                     game.addBoard(game.board);
                     color = game.currMove==-1? "black" : "white" ;
@@ -175,11 +177,98 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                     game.clearPassant(game.currMove);
                     game.updateValidMoves(-game.currMove);
                     game.updateValidMoves(game.currMove);
+
+//                    board.setOnTouchListener(new View.OnTouchListener() {
+//                        public boolean onTouch(View v, MotionEvent event) {
+//                            return event.getAction() == MotionEvent.ACTION_MOVE;
+//                        }
+//                    });
+                    if (game.currMove == -1) {
+                        blackKing.generateValidMoves(game.board);
+                        whiteKing.generateValidMoves(game.board);
+                        if (whiteKing.isInCheck) {
+                            status.setText("White in Check");
+                        }
+                    }
+                    else {
+                        whiteKing.generateValidMoves(game.board);
+                        blackKing.generateValidMoves(game.board);
+                        if (blackKing.isInCheck) {
+                            status.setText("Black in Check");
+                        }
+                    }
+
                     board.setOnTouchListener(new View.OnTouchListener() {
                         public boolean onTouch(View v, MotionEvent event) {
                             return event.getAction() == MotionEvent.ACTION_MOVE;
                         }
                     });
+
+                    King king2 = game.currMove==-1 ?  whiteKing : blackKing;
+                    if (king2.isInCheck && !king2.hasValidMove && !game.protector() && !game.blocker()) {
+                        String winner = game.currMove==-1? "Black" : "White" ;
+                        status.setText("Checkmate. "+winner+" wins");
+                        return;
+                    }
+                    if (game.hasNoValidMoves() ) {
+                        King king = game.currMove==-1 ?  whiteKing : blackKing;
+                        if (!king.isInCheck) {
+                            status.setText("Draw by stalemate");
+                        } else {
+                            String winner = game.currMove==-1? "Black" : "White" ;
+                            status.setText("Checkmate. "+winner+" wins");
+                            return;
+                        }
+                    }
+                    game.disarmShields();
+                    recording.addView(game.board);
+                    tempView.setBackgroundColor(0x00000000);
+                    clearMoves();
+                    pieceIsChosen = false;
+//                    game.copyBoard();
+
+                }
+
+                /////////////////////
+            }
+        });
+        undo_btn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v ) {
+                PlayGame activity = PlayGame.this;
+                SquareAdapter adapter = activity.adapter;
+                Game game = activity.game;
+                if (!canUndo) {
+                    status.setText("Cannot use undo button until a move is made");
+                } else {
+                    game.board = game.copyBoard(game.prevBoard);
+
+                    game.addBoard(game.board);
+
+                    color = game.currMove==-1? "black" : "white" ;
+                    status.setText("Choose a " + color+" piece to move");
+//                    board.setAdapter(adapter);
+                    if (game.currMove == -1) {
+                        whiteKing.isInCheck = false;
+                    }
+                    else {
+                        blackKing.isInCheck = false;
+                    }
+                    game.currMove *= -1;
+                    game.clearPassant(game.currMove);
+                    game.updateValidMoves(-game.currMove);
+                    game.updateValidMoves(game.currMove);
+
+//                    adapter = new SquareAdapter(PlayGame.this, game.board);
+//                    setContentView(R.layout.play_game);
+//                    final GridView chessBoardGridView = findViewById(R.id.board);
+//                    chessBoardGridView.setAdapter(adapter);
+//                    chessBoardGridView.setOnItemClickListener(PlayGame.this);
+//
+//                    board.setOnTouchListener(new View.OnTouchListener() {
+//                        public boolean onTouch(View v, MotionEvent event) {
+//                            return event.getAction() == MotionEvent.ACTION_MOVE;
+//                        }
+//                    });
                     if (game.currMove == -1) {
                         blackKing.generateValidMoves(game.board);
                         whiteKing.generateValidMoves(game.board);
@@ -216,17 +305,24 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                     game.disarmShields();
                     recording.addView(game.board);
 
-                    tempView.setBackgroundColor(0x00000000);
                     clearMoves();
                     pieceIsChosen = false;
+
+//                    adapter = new SquareAdapter(PlayGame.this, game.board);
+//                    setContentView(R.layout.play_game);
+//                    final GridView chessBoardGridView = findViewById(R.id.board);
+//                    chessBoardGridView.setAdapter(adapter);
+//                    chessBoardGridView.setOnItemClickListener(PlayGame.this);
+                    board.setAdapter(adapter);
+
+                    board.setOnTouchListener(new View.OnTouchListener() {
+                        public boolean onTouch(View v, MotionEvent event) {
+                            return event.getAction() == MotionEvent.ACTION_MOVE;
+                        }
+                    });
+
+                    canUndo = false;
                 }
-/////////////////////////
-
-            }
-        });
-        undo_btn.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v ) {
-
             }
         });
 //        allMoves.add(this.game.board);
@@ -252,7 +348,8 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
         if (!pieceIsChosen) {
             pieceToMove = (Piece) adapter.getItem(position);
             if (pieceToMove == null) {
-                status.setText("You need to choose a piece to move");
+                String color = game.currMove==-1 ? "White" : "Black";
+                status.setText("You need to choose a " + color+" piece to move");
                 status.setTextColor(0xFFD2000F);
                 return;
             } else {
@@ -265,6 +362,9 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                     color = game.currMove==-1? "Whites" : "Blacks";
                     status.setTextColor(0xFFD2000F);
                     status.setText("It's "+ color +" turn to move.");
+
+                    // ?? need this??
+                    pieceIsChosen=false;
                 }
                 view.setBackgroundColor(0x990000FF);
                 legalMoves(pieceToMove);
@@ -282,9 +382,13 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                     ((pieceToMove.color == -1 && yFinal == 0) ||
                             (pieceToMove.color == 1 && yFinal == 7))) {
                 promote();
+                this.game.addBoard(this.game.board);
+                canUndo = true;
+//                game.copyBoard();
                 return;
             }
-            if (pieceToMove.move(game.board, xFinal, yFinal, game.currMove)) {
+            if (pieceToMove.move(game,game.board, xFinal, yFinal, game.currMove)) {
+                canUndo = true;
                 status.setText("Choose a piece to move");
                 this.game.addBoard(this.game.board);
                 color = game.currMove==-1? "black" : "white" ;
@@ -344,6 +448,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                 tempView.setBackgroundColor(0x00000000);
                 clearMoves();
                 pieceIsChosen = false;
+//                game.copyBoard();
 //                allMoves.add(this.game.board);
             }
             else {
@@ -391,7 +496,6 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
             view.setBackgroundColor(0x00000000);
         }
     }
-    //configuring account
 
 
     public void promote() {
@@ -401,7 +505,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
         builder.setItems(promo, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int chosen) {
-                pieceToMove.move(game.board, xFinal, yFinal, pieceToMove.color);
+                pieceToMove.move(game,game.board, xFinal, yFinal, pieceToMove.color);
                 if (promo[chosen].equals("Queen")) {
                     game.board[pieceToMove.xPos][pieceToMove.yPos] = new Queen(pieceToMove.color, pieceToMove.xPos, pieceToMove.yPos);
                 }
@@ -415,6 +519,8 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                     game.board[pieceToMove.xPos][pieceToMove.yPos] = new Rook(pieceToMove.color, pieceToMove.xPos, pieceToMove.yPos);
                 }
                 pieceToMove = game.board[pieceToMove.xPos][pieceToMove.yPos];
+                game.addBoard(game.board);
+                //record the boardView here instead of top method
                 promoteMove();
             }
         });
@@ -438,6 +544,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
         game.clearPassant(game.currMove);
         game.updateValidMoves(-game.currMove);
         game.updateValidMoves(game.currMove);
+
         board.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
                 return event.getAction() == MotionEvent.ACTION_MOVE;

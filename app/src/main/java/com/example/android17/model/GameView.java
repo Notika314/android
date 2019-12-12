@@ -36,6 +36,13 @@ public class GameView implements Serializable, Comparable<GameView> {
         int i = Collections.binarySearch(views, this);
         i = ~i;
         views.add(i, this);
+        //moves = new LinkedList<String[][]>();
+    }
+
+
+    public void addView(String[][] view){
+        moves.add(view);
+        printLatsView();
     }
 
     public boolean equals(Object o) {
@@ -48,7 +55,7 @@ public class GameView implements Serializable, Comparable<GameView> {
     public void saveName(String name) {
         this.name = name;
         this.date = new Date(System.currentTimeMillis());
-//        views.add(this);
+        //views.add(this);
     }
 
     public String toString() {
@@ -67,6 +74,16 @@ public class GameView implements Serializable, Comparable<GameView> {
         os.writeObject(this);
         os.close();
         fos.close();
+    }
+
+    public void printLatsView() {
+        String[][] lastBoard = this.moves.getLast();
+          for (int i=0;i<8;i++) {
+              for (int j=0;j<8;j++) {
+                  System.out.print(lastBoard[j][i] +" ");
+              }
+              System.out.println();
+          }
     }
    
 }

@@ -35,7 +35,6 @@ public class ReplayGame extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         recording = GameView.views.get(GameView.index);
         super.onCreate(savedInstanceState);
-        String[][] temp = recording.moves.getFirst();
         LinkedList<String[][]> first = recording.moves;
         iterate = first.listIterator();
         adapter = new SquareAdapter(this, iterate.next());
