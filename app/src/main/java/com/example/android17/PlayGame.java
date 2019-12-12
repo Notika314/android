@@ -137,6 +137,7 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                 } else {
                     if (activity.drawOfferred) {
                         status.setText("Draw accepted. End of the game");
+                        terminus("Draw");
                         activity.resign_btn.setEnabled(false);
                         activity.draw_btn.setEnabled(false);
                         activity.undo_btn.setEnabled(false);
@@ -439,17 +440,19 @@ public class PlayGame extends AppCompatActivity implements OnItemClickListener {
                 if (king2.isInCheck && !king2.hasValidMove && !game.protector() && !game.blocker()) {
                     String winner = game.currMove==-1? "Black" : "White" ;
                     status.setText("Checkmate. "+winner+" wins");
+                    terminus("CheckMate");
                     return;
                 }
                 if (game.hasNoValidMoves() ) {
                     King king = game.currMove==-1 ?  whiteKing : blackKing;
                     if (!king.isInCheck) {
                         status.setText("Draw by stalemate");
-
+                        terminus("Stalemate");
                     }
                     else {
                         String winner = game.currMove==-1? "Black" : "White" ;
                         status.setText("Checkmate. "+winner+" wins");
+                        terminus("CheckMate");
                         return;
                     }
                 }
