@@ -12,6 +12,10 @@
     <string name="back">BACK</string>
     <string name="next">NEXT</string>
     <string name="undo">UNDO</string>
+    <string name="date">SORT BY DATE</string>
+    <string name="open">START RECORD</string>
+    <string name="delete">DELETE RECORD</string>
+    <string name="name">SORT BY NAME</string>
     <string name="textview">Choose a white piece to move</string>
     <string name="saved_games">Saved Games</string>
     <string name="title_activity_saved_games">SavedGames</string>

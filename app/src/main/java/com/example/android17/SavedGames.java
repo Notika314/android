@@ -1,8 +1,11 @@
 package com.example.android17;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.ViewConfiguration;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import java.io.File;
 import java.io.*;
@@ -18,17 +21,24 @@ import android.widget.ListView;
 import androidx.appcompat.app.AppCompatActivity;
 import android.widget.AdapterView.OnItemClickListener;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
 import android.view.View;
+import android.widget.Toast;
 
 public class SavedGames extends AppCompatActivity implements OnItemClickListener {
-    GameView[] gameViews;
+    public Button open_btn, name_btn, date_btn, delete_btn;
     private ListView games;
     private String[] gamesNames;
+    long mLastClickTime;
+    View lastViewed;
+    Context con;
+    int index = -1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.saved_games);
+        con = this;
         try {
             loadInFiles();
         } catch (IOException e) {
@@ -36,27 +46,77 @@ public class SavedGames extends AppCompatActivity implements OnItemClickListener
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        //Toolbar toolbar = findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
         games = findViewById(R.id.games_list);
-        //gamesNames = getResources().getStringArray(R.array.games_array);
-        gamesNames = GameView.views.stream().map(o -> o.toString()).collect(Collectors.toList()).toArray(new String[GameView.views.size()]);
-        /*if (gamesNames == null || gamesNames.length == 0) {
-            gamesNames = new String[]{"Empty"};
-        }*/
+        gamesNames = GameView.views.stream().map(GameView::toString).collect(Collectors.toList()).toArray(new String[GameView.views.size()]);
         ArrayAdapter<String> adapter =
                 new ArrayAdapter<>(this, R.layout.game, gamesNames);
         games.setAdapter(adapter);
         games.setOnItemClickListener(this);
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        name_btn = findViewById(R.id.name_btn);
+        delete_btn = findViewById(R.id.delete_btn);
+        date_btn = findViewById(R.id.date_btn);
+        open_btn = findViewById(R.id.open_btn);
+        name_btn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v ) {
+                gamesNames = GameView.views.stream().sorted(Comparator.comparing(GameView::getName)).
+                        collect(Collectors.toList()).stream().map(GameView::toString).collect(Collectors.toList()).toArray(new String[GameView.views.size()]);
+                ArrayAdapter<String> adapter =
+                        new ArrayAdapter<>(con, R.layout.game, gamesNames);
+                games.setAdapter(adapter);
+                index = -1;
+            }
+        });
+        delete_btn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v ) {
+                if (index < 0) {
+                    return;
+                }
+                GameView temp = GameView.views.get(index);
+                GameView.views.remove(index);
+                File dir = new File(GameView.context.getFilesDir()+"/");
+                File file = new File(dir, temp.name+".ser");
+                file.delete();
+                gamesNames = GameView.views.stream().map(GameView::toString).collect(Collectors.toList()).toArray(new String[GameView.views.size()]);
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(con, R.layout.game, gamesNames);
+                games.setAdapter(adapter);
+                index = -1;
+            }
+        });
+        date_btn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v ) {
+                gamesNames = GameView.views.stream().sorted().
+                        collect(Collectors.toList()).stream().map(GameView::toString).collect(Collectors.toList()).toArray(new String[GameView.views.size()]);
+                ArrayAdapter<String> adapter =
+                        new ArrayAdapter<>(con, R.layout.game, gamesNames);
+                games.setAdapter(adapter);
+                index = -1;
+            }
+        });
+        open_btn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v ) {
+                GameView.index = index;
+                Intent intent = new Intent(con, ReplayGame.class);
+                index = -1;
+                //lastViewed.setBackgroundColor(0x00000000);
+                lastViewed.setSelected(false);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        GameView.index = position;
-        Intent intent = new Intent(this, ReplayGame.class);
-        startActivity(intent);
+
+        if (lastViewed != null) {
+            lastViewed.setBackgroundColor(0x00000000);
+            lastViewed.setSelected(false);
+        }
+        //view.setBackgroundColor(ContextCompat.getColor(this, android.R.color.holo_blue_light));
+        view.setSelected(true);
+        lastViewed = view;
+        index = position;
     }
+
 
     private void loadInFiles() throws IOException, ClassNotFoundException {
         File dir = new File(GameView.context.getFilesDir()+"/");

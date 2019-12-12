@@ -51,25 +51,6 @@ public class SquareAdapter extends BaseAdapter {
             view = new ImageView(context);
             int size = parent.getWidth()/8;
             view.setLayoutParams(new GridView.LayoutParams(size,size));
-            /*
-            int col = position/8 %2;
-            if (col == 0) {
-                if (position%2 == 0) {
-                view.setBackgroundColor(Color.parseColor("#D18B46"));
-                }
-                else {
-                view.setBackgroundColor(Color.parseColor("#FECEA0"));
-                }
-            }
-            else {
-                if (position%2 == 0) {
-                view.setBackgroundColor(Color.parseColor("#FECEA0"));
-                }
-                else {
-                view.setBackgroundColor(Color.parseColor("#D18B46"));
-                }
-            }
-            */
             Object p = board[position%8][position/8];
             if( p != null) {
                 view.setImageResource(context.getResources().getIdentifier(p.toString(),

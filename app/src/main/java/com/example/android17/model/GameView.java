@@ -39,6 +39,10 @@ public class GameView implements Serializable, Comparable<GameView> {
         //moves = new LinkedList<String[][]>();
     }
 
+    public String getName() {
+        return name.toLowerCase();
+    }
+
 
     public void addView(String[][] view){
         moves.add(view);
