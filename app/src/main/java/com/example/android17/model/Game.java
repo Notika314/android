@@ -13,6 +13,8 @@ public class Game {
 	 * Defines the game board, made up of all Pieces on the board at
 	 * any time in an 8 by 8 array.
 	 */
+
+	public Piece[][] prevBoard;
 	public GameView allViews;
 	public Piece[][] board;
 	public ArrayList<Piece> piecesWithValidMoves;
@@ -55,6 +57,61 @@ public class Game {
 		return;
 	}
 
+	// building board from GameView string
+	public Piece[][] buildBoardFromView(String[][] view) {
+	    Piece[][] newBoard = new Piece[8][8];
+	    int color;
+	    for (int i=0;i<8;i++) {
+	        for (int j=0;j<8;j++) {
+	        	if (view[i][j]!=null) {
+					String[] parts = view[i][j].split("");
+					color = parts[1] == "w" ? -1 : 1;
+					System.out.println("parts[0] is "+parts[0]+", parts[1] is "+parts[1]+", parts[2] is "+parts[2]);
+					switch (parts[2]) {
+						case "p":
+							System.out.println("adding a pawn");
+							newBoard[i][j] = new Pawn(color, i, j);
+							break;
+						case "r":
+							System.out.println("adding a Rook");
+							newBoard[i][j] = new Rook(color, i, j);
+							break;
+						case "n":
+							System.out.println("adding a Knight");
+							newBoard[i][j] = new Knight(color, i, j);
+							break;
+						case "b":
+							System.out.println("adding a Bishotp");
+							newBoard[i][j] = new Bishop(color, i, j);
+							break;
+						case "q":
+							System.out.println("adding a Queen");
+							newBoard[i][j] = new Queen(color, i, j);
+							break;
+						case "k":
+							newBoard[i][j] = new King(color, i, j);
+							break;
+					}
+				}
+            }
+        }
+	    return newBoard;
+    }
+
+
+	public Piece[][] copyBoard(Piece[][] oldBoard) {
+		prevBoard = new Piece[8][8];
+		for (int i=0;i<8;i++) {
+			for (int j=0;j<8;j++) {
+				if (oldBoard[i][j]!=null) {
+					prevBoard[i][j] = oldBoard[i][j].createCopy();
+				} else prevBoard[i][j] = null;
+			}
+		}
+		return prevBoard;
+	}
+//	public
+
 	public Piece choseRandomPiece() {
 		piecesWithValidMoves = new ArrayList<Piece>();
 		for (int i=0;i<8;i++) {
@@ -64,10 +121,13 @@ public class Game {
 				}
 			}
 		}
-	    int choice = piecesWithValidMoves.size();
-	    Random r = new Random();
-	    int randomInd = r.nextInt(choice);
-	    return piecesWithValidMoves.get(randomInd);
+		if (piecesWithValidMoves.size()==0 ) return null;
+		else {
+			int choice = piecesWithValidMoves.size();
+			Random r = new Random();
+			int randomInd = r.nextInt(choice);
+			return piecesWithValidMoves.get(randomInd);
+		}
     }
 
 
@@ -90,12 +150,9 @@ public class Game {
 				if (board[i][j]!=null) {
 					simpleBoard[i][j]=board[i][j].toString();
 				}
-//				else if (board[i][j].color==1) simpleBoard=simpleBoard+"b"+ board[i][j].type+" ";
-//				else simpleBoard= simpleBoard+"w"+board[i][j].type+" ";
 			}
 		}
 		allViews.addView(simpleBoard);
-//		System.out.println(simpleBoard);
 	}
 
 	public Piece[][] getBoard() {
@@ -200,11 +257,13 @@ public class Game {
 	 * @param color Color that we wish to update.
 	 */
 	public void updateValidMoves(int color) {
+		System.out.println("Updating valid moves for "+color);
 		int i,j;
 		for (i=0;i<8;i++) {
 			for (j=0;j<8;j++) {
 				if (board[j][i]!=null && board[j][i].color == color && board[j][i].type != 'K') {
 					board[j][i].generateValidMoves(board);
+					if (board[j][i].hasValidMove) System.out.println(board[j][i]+" has valid moves");
 				}
 			}
 		}

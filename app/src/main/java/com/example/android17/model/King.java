@@ -40,6 +40,15 @@ public class King extends Piece {
 		return temp;
 	}
 
+	public Piece createCopy() {
+		King temp = new King(this.color, this.xPos, this.yPos);
+		temp.validMoves = this.validMoves;
+		temp.hasValidMove = this.hasValidMove;
+		temp.isInCheck = this.isInCheck;
+		temp.hasMoved = this.hasMoved;
+		temp.hollow = false;
+		return temp;
+	}
 	/**
 	 * Move method specific to how the King operates when they move given their special move set.
 	 * @param board The game board with all current available pieces located on it.
@@ -48,7 +57,7 @@ public class King extends Piece {
 	 * @param color The color that is attempting to move, ensures strict order is adhered to in chess.
 	 * @return True if move is valid and no parameters are wrong, False if something prevents the move from legally occurring
 	 */
-	public boolean move(Piece board[][], int x, int y, int color) {
+	public boolean move(Game game,Piece board[][], int x, int y, int color) {
 		if (this.color != color) {
 			return false;
 		}
@@ -58,6 +67,7 @@ public class King extends Piece {
 		if (this.validMoves[x][y] == 0) {
 			return false;
 		}
+		game.copyBoard(board);
 		if (this.color == -1) {
 			Piece.wKingIsInDanger = new int[] {-1, -1, -1, -1};
 		}

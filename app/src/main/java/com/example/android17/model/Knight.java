@@ -29,7 +29,13 @@ public class Knight extends Piece {
 		temp.hollow = true;
 		return temp;
 	}
-
+	public Piece createCopy() {
+		Knight temp = new Knight(this.color, this.xPos, this.yPos);
+		temp.validMoves = this.validMoves;
+		temp.hasValidMove = this.hasValidMove;
+		temp.hollow = false;
+		return temp;
+	}
 	/**
 	 * The logic for how a Knight generates the legal moves available to it. Starts
 	 * with flags set to false and a clear board that is only populated and set to 

@@ -8,17 +8,22 @@ import android.content.Context;
 
 public class GameView implements Serializable {
     public static ArrayList<GameView> views=new ArrayList<GameView>();
+
     public String name;
     static Context context;
     public Date date;
     public LinkedList<String[][]> moves;
     static final long serialVersionUID = 1L;
     public GameView() {
+        System.out.println("creating new gameView list");
         moves = new LinkedList<String[][]>();
     }
 
+
     public void addView(String[][] view){
+        System.out.println("adding new move to gameView");
         moves.add(view);
+        printLatsView();
     }
 
     public boolean equals(Object o) {
@@ -28,10 +33,10 @@ public class GameView implements Serializable {
         else return false;
     }
 
-    public void saveName(String name) {
+    public void view(String name) {
         this.name = name;
         this.date = new Date();
-//        views.add(this);
+        views.add(this);
     }
 
     public int compareTo(GameView o) {
@@ -46,6 +51,16 @@ public class GameView implements Serializable {
         os.writeObject(view);
         os.close();
         fos.close();
+    }
+
+    public void printLatsView() {
+        String[][] lastBoard = this.moves.getLast();
+          for (int i=0;i<8;i++) {
+              for (int j=0;j<8;j++) {
+                  System.out.print(lastBoard[j][i] +" ");
+              }
+              System.out.println();
+          }
     }
    
 }

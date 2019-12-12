@@ -30,6 +30,13 @@ public class Bishop extends Piece {
 		return temp;
 	}
 
+	public Piece createCopy() {
+		Bishop temp = new Bishop(this.color, this.xPos, this.yPos);
+		temp.validMoves = this.validMoves;
+		temp.hasValidMove = this.hasValidMove;
+		temp.hollow = false;
+		return temp;
+	}
 	/**
 	 * Generates valid moves in a line of attack as defined by generateValidMoves.
 	 * Also checks to ensure the piece is not shielding the King from check.
